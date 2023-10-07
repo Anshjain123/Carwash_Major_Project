@@ -1,0 +1,44 @@
+@keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  .home_car {  
+    animation: 1s ease-out 0s 1 slideInFromLeft;
+    /* padding: 10px; */
+    padding-bottom: 25px;
+    padding-top: 25px;
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.cleaner__block {
+    animation: 1s ease-out 0s 1 slideInFromLeft;
+    cursor: pointer;
+}
+.client__block {
+    animation: 1s ease-out 0s 1 slideInFromRight;
+    cursor: pointer;
+}
+.Daily-Car-Wash1 {
+    animation: 1s ease-out 0s 1 slideInFromLeft;
+}
+.Daily-Car-Wash2 {
+    animation: 1s ease-out 0s 1 slideInFromRight 
+}
