@@ -10,7 +10,7 @@
 
   @keyframes slideInFromRight {
     0% {
-      transform: translateX(100%);
+      transform: translateX(-100%);
     }
     100% {
       transform: translateX(0);
@@ -36,9 +36,9 @@
     animation: 1s ease-out 0s 1 slideInFromRight;
     cursor: pointer;
 }
-.Daily-Car-Wash1 {
+.text1 {
     animation: 1s ease-out 0s 1 slideInFromLeft;
 }
-.Daily-Car-Wash2 {
-    animation: 1s ease-out 0s 1 slideInFromRight 
+.text2 {
+    animation: 1s ease-out 0s 1 slideInFromRight;
 }

@@ -19,11 +19,12 @@ const Dashboard = () => {
 
     const navigate = useNavigate(); 
     const handleNavigate = ()=> {
-        navigate("/register");
+        navigate("/cleaners");
     }
 
     return (
         <div>
+
             <div className="container" style={{ display: 'flex', flex: 1, justifyContent: 'center', flexDirection: 'column' }}>
                 <div className='Car__class' style={{ flex: 0.5, alignContent: 'center' }}>
                     <img class="home_car" src={car} />
@@ -42,7 +43,7 @@ const Dashboard = () => {
                                 </div>
 
                                 <div style={{ flex: 0.2, alignItems: 'center', display: 'flex', justifyContent: 'center', fontSize: '20px', fontWeight: 'bolder' }}>
-                                    Cleaner Onboarding
+                                    Cleaners
                                 </div>
                                 {/* <div style={{ flex: 0.1 }}>
                                     <text>
@@ -78,13 +79,13 @@ const Dashboard = () => {
 
                 </div>
                 <div class="Daily-Car-Wash" style={{ textAlign: 'center' }}>
-                    <h1 className='Daily-Car-Wash1'>
+                    <h1 className='text1'>
                         Complete Car Wash
                     </h1>
 
                     <hr style={{ color: 'black', height: '1px' }} />
 
-                    <h1 className='Daily-Car-Wash2' style={{ color: 'rgb(239, 63, 73)' }}>
+                    <h1 className='text2' style={{ color: 'rgb(239, 63, 73)' }}>
                         At your DoorStep!
                     </h1>
                 </div>
