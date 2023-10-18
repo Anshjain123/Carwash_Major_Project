@@ -17,80 +17,54 @@ const Dashboard = () => {
     const height = window.innerHeight;
 
 
-    const navigate = useNavigate(); 
-    const handleNavigate = ()=> {
-        navigate("/cleaners");
-    }
+    const navigate = useNavigate();
 
     return (
-        <div>
 
-            <div className="container" style={{ display: 'flex', flex: 1, justifyContent: 'center', flexDirection: 'column' }}>
-                <div className='Car__class' style={{ flex: 0.5, alignContent: 'center' }}>
-                    <img class="home_car" src={car} />
-                </div>
-                <div className='cleaner__client__block' style={{ flexDirection: 'row', display: 'flex', flex: 1, justifyContent: 'space-around' }}>
-                    <div className='cleaner__block' style={{ flex: 0.2 }} onClick={()=> handleNavigate()} >  
-                        <Card sx={{
-                            maxHeight: '250px', maxWidth: '250px', '&:hover': {
-                                // backgroundColor: 'primary.main',
-                                opacity: [0.9, 0.8, 0.7],
-                            }
-                        }} >
-                            <CardContent sx={{ maxHeight: '250px', maxWidth: '250px', display: 'flex' }}>
-                                <div style={{ flex: 0.8 }}>
-                                    <img class="cleaner__car" style={{ maxWidth: '100%' }} src={cleaner} />
-                                </div>
 
-                                <div style={{ flex: 0.2, alignItems: 'center', display: 'flex', justifyContent: 'center', fontSize: '20px', fontWeight: 'bolder' }}>
-                                    Cleaners
-                                </div>
-                                {/* <div style={{ flex: 0.1 }}>
-                                    <text>
-                                    cleaner Onboarding
-                                    </text>
-                                    
-                                </div> */}
+        <div className="container" style={{ display: 'flex', flex: 1, justifyContent: 'center', flexDirection: 'column' }}>
 
-                            </CardContent>
-                        </Card>
+            <div class="Daily-Car-Wash" style={{ textAlign: 'center' }}>
+                <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }} >
+                        <h1 className='text1' style={{ fontSize: '40px', fontWeight: 'bolder', color: 'black' }}>
+                            Complete Car Wash
+                        </h1>
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly', color: 'black' }}>
+                            <h4>
+                                S t a r t s
+                            </h4>
+                            <h4>
+                                f r o m
+                            </h4>
+                            <h4>
+                                j u s t
+                            </h4>
+                        </div>
 
                     </div>
-                    <div className='client__block' style={{ flex: 0.2 }}>
-                        <Card sx={{
-                            maxHeight: '250px', maxWidth: '250px', '&:hover': {
-                                // backgroundColor: 'primary.main',
-                                opacity: [0.9, 0.8, 0.7],
-                            }
-                        }}>
-                            <CardContent sx={{ maxHeight: '250px', maxWidth: '250px', display: 'flex' }}>
-                                <div style={{ flex: 0.8 }}>
+                    <div>
 
-                                    <img class="client__car" src={client} style={{ maxWidth: '100%' }} />
-                                </div>
-                                <div style={{ flex: 0.2, alignItems: 'center', display: 'flex', justifyContent: 'center', fontSize: '20px', fontWeight: 'bolder' }}>
-                                    Client Onboarding
-                                </div>
-
-                            </CardContent>
-                        </Card>
+                        <h1 style={{ fontSize: '70px', marginLeft: "20px", marginTop: "-5px", color: 'black' }} >$9</h1>
                     </div>
-
-
                 </div>
-                <div class="Daily-Car-Wash" style={{ textAlign: 'center' }}>
-                    <h1 className='text1'>
-                        Complete Car Wash
-                    </h1>
 
-                    <hr style={{ color: 'black', height: '1px' }} />
 
-                    <h1 className='text2' style={{ color: 'rgb(239, 63, 73)' }}>
-                        At your DoorStep!
-                    </h1>
-                </div>
+
+                <hr style={{ color: 'black', height: '1px' }} />
+
+                <h1 className='text2' style={{ color: 'rgb(239, 63, 73)' }}>
+                    At your DoorStep!
+                </h1>
             </div>
+
+            <div className='Car__class' style={{ flex: 0.5, alignContent: 'center' }}>
+                <img class="home_car" src={car} />
+            </div>
+
+
         </div>
+
     )
 }
 

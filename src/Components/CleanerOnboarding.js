@@ -1,26 +1,30 @@
 import React, { useState } from 'react'
 import './CleanerOnboarding.css'
-import { useNavigate } from 'react-router';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useLocation, useNavigate } from 'react-router';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import { doc, setDoc } from "firebase/firestore";
 import { db } from '../firebase';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import { getStorage, ref } from "firebase/storage";
 import { Toaster, toast } from 'react-hot-toast';
 
 const CleanerOnboarding = () => {
-    const [imgurl, setimgurl] = useState(null);
-    const [Name, setName] = useState("");
-    const [BirthDate, setBirthDate] = useState(null);
-    const [email, setemail] = useState(null);
-    const [Curraddress, setCurraddress] = useState(null);
-    const [permanentAddress, setpermanentAddress] = useState(null);
-    const [gender, setgender] = useState(null);
-    const [phoneNumber, setphoneNumber] = useState(null)
-    const [adhaar, setadhaar] = useState(null)
-
+    const location = useLocation();
+    console.log(location.state);
+    const [imgurl, setimgurl] = useState(location?.state?.imgurl);
+    const [Name, setName] = useState(location?.state?.name);
+    const [BirthDate, setBirthDate] = useState(location?.state?.dob);
+    const [email, setemail] = useState(location?.state?.email);
+    const [Curraddress, setCurraddress] = useState(location?.state?.currAddress);
+    const [permanentAddress, setpermanentAddress] = useState(location?.state?.permanentAddress);
+    const [gender, setgender] = useState(location?.state?.gender);
+    const [phoneNumber, setphoneNumber] = useState(location?.state?.phoneNumber);
+    const [adhaar, setadhaar] = useState(location?.state?.adhaar);
+    const [error, seterror] = useState(null);
     const navigate = useNavigate();
 
     const handleNavigate = (e) => {
@@ -28,35 +32,73 @@ const CleanerOnboarding = () => {
     }
 
     const [type, settype] = useState(null)
-    const handleCapture = async (target) => {
+    const handleCapture = async (target, Type) => {
+        console.log(target);
         if (target.files) {
             const file = target.files[0];
-            const type = typeof(file);
+            
+            const storage = getStorage();
+            var storagePath = "images/" + file.name; 
+            const storageRef = ref(storage, storagePath);
+             
+            // console.log(file.name); 
+
+            const type = typeof (file);
             settype(type);
             const newUrl = URL.createObjectURL(file);
-            setimgurl(newUrl);
+        
+            if(Type === "adhaar") {
+                setadhaar(newUrl);
+                console.log(newUrl)
+            } else {
+                setimgurl(newUrl);
+            }
+
         }
     }
 
     const handleSubmit = async (e) => {
+        
+        if(Name === undefined || imgurl === undefined || BirthDate === undefined || email === undefined || Curraddress == undefined || permanentAddress === undefined || gender === undefined || phoneNumber === undefined || adhaar === undefined) {
+            toast.error("required fields are empty!");
+            return;
+        }
+
         e.preventDefault()
         // console.log("Yes");
+        // console.log(adhaar);
         await setDoc(doc(db, "cities", `${email}`), {
-            Name:Name, 
-            email:email,
-            DOB:BirthDate, 
-            currAddress:Curraddress, 
-            permanentAddress:permanentAddress, 
-            phoneNumber:phoneNumber, 
-            adhaar:adhaar, 
-            imgurl:imgurl
+            Name: Name,
+            email: email,
+            DOB: BirthDate,
+            currAddress: Curraddress,
+            permanentAddress: permanentAddress,
+            phoneNumber: phoneNumber,
+            adhaar: adhaar,
+            imgurl: imgurl,
+            gender:gender 
         });
-        toast.success("Cleaner registered successfully!"); 
+        toast.success("Cleaner registered successfully!");
         navigate("/cleaners")
     }
+
+    function isValidEmail(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
+    const handleChangeemail = (e) => {
+        if (!isValidEmail(e.target.value)) {
+            seterror("invalid email");
+        } else {
+            seterror(null);
+        }
+
+        setemail(e.target.value);
+    }
+
     return (
         <section class="vh-100 gradient-custom">
-            <Toaster/>
+            <Toaster />
             <div class="container h-100">
                 <div class="row justify-content-center align-items-center h-100">
                     <div class="col-12 col-lg-9 col-xl-7">
@@ -69,28 +111,27 @@ const CleanerOnboarding = () => {
                                         <div class="col-md-6">
 
                                             <div class="form-outline">
-                                                <input type="text" id="firstName" onChange={(e) => setName(e.target.value)} class="form-control form-control-lg" />
-                                                <label class="form-label" for="firstName">Name</label>
+                                                <TextField id="standard-basic" label="Name" variant="standard" value={Name} onChange={(e) => setName(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6 d-flex align-items-center">
+                                        <div class="col-md-6 ">
 
-                                            <div class="form-outline datepicker w-100">
-                                                <input type="date" class="form-control form-control-lg" id="birthdayDate" onChange={(e) => setBirthDate(e.target.value)} />
-                                                <label for="birthdayDate" class="form-label">Birthday</label>
+                                            <div class="form-outline ">
+                                                <TextField value={BirthDate} id="standard-basic" label="DOB (dd-mm-yyyy)" variant="standard" type='date' onChange={(e) => setBirthDate(e.target.value)} sx={{ width: '100%' }} required />
+
                                             </div>
 
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-outline">
-                                                <input type="email" id="emailAddress" class="form-control form-control-lg" onChange={(e) => setemail(e.target.value)} />
-                                                <label class="form-label" for="emailAddress">Email</label>
+                                                {error && <div style={{ color: 'red' }}>{error}</div>}
+                                                <TextField value={email} id="standard-basic" label="email (eg. abc@gmail.com)" disabled={location.state ? true : false} variant="standard" onChange={handleChangeemail} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
@@ -101,16 +142,14 @@ const CleanerOnboarding = () => {
                                         <div class="col-md-6 pb-2">
 
                                             <div class="form-outline">
-                                                <input type="text" id="Currentaddress" class="form-control form-control-lg" onChange={(e) => setCurraddress(e.target.value)} />
-                                                <label class="form-label" for="adhaar">Current Address</label>
+                                                <TextField value={Curraddress} id="standard-basic" label="Current Address" variant="standard" onChange={(e) => setCurraddress(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
                                         <div class="col-md-6 pb-2">
 
                                             <div class="form-outline">
-                                                <input type="text" id="permanentAddress" class="form-control form-control-lg" onChange={(e) => setpermanentAddress(e.target.value)} />
-                                                <label class="form-label" for="adhaar">Permanent Address</label>
+                                                <TextField value={permanentAddress} id="standard-basic" label="Permanent Address" variant="standard" onChange={(e) => setpermanentAddress(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
@@ -122,33 +161,27 @@ const CleanerOnboarding = () => {
                                         <div class="col-md-6">
 
                                             <div class="form-outline">
-                                                <input type="tel" id="phoneNumber" class="form-control form-control-lg" onChange={(e) => setphoneNumber(e.target.value)} />
-                                                <label class="form-label" for="phoneNumber">Phone Number</label>
+                                                <TextField value={phoneNumber} id="standard-basic" label="Phone Number" variant="standard" type='tel' onChange={(e) => setphoneNumber(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
                                         <div class="col-md-6">
 
-                                            <h6 class="mb-2">Gender: </h6>
-
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="femaleGender"
-                                                    value="option1" checked />
-                                                <label class="form-check-label" for="MaleGender">Male</label>
-                                            </div>
-
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="maleGender"
-                                                    value="option2" />
-                                                <label class="form-check-label" for="FemaleGender">Female</label>
-                                            </div>
-
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="otherGender"
-                                                    value="option3" />
-                                                <label class="form-check-label" for="otherGender">Other</label>
-                                            </div>
-
+                                
+                                                <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                                                <RadioGroup
+                                                    aria-labelledby="demo-radio-buttons-group-label"
+                                                    defaultValue={location.state ? gender : "female"}
+                                                    name="radio-buttons-group"
+                                                    sx={{display:'flex', flexDirection:'row'}}
+                                                    onChange={(e) => setgender(e.target.value)}   
+                                                    required
+                                                >
+                                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                                                </RadioGroup>
+                                            {/* </FormControl> */}
 
                                         </div>
 
@@ -157,14 +190,20 @@ const CleanerOnboarding = () => {
                                             <div class="col-md-6 mt-3">
 
                                                 <div class="form-outline">
-                                                    <input type="file" id="Currentaddress" onChange={(e) => setadhaar(e.target.value)} />
+                                                    <input type="file" id="adhaar" onChange={(e) => handleCapture(e.target, "adhaar")} required />
                                                     <label class="form-label" for="adhaar">Adhaar Card Upload</label>
+                                                    {location.state && <h6 style = {{color:'red'}}> adhaar already uploaded </h6>}
                                                 </div>
 
                                             </div>
                                             <div class="col-md-6 mt-3">
 
-
+                                                <div class="form-outline">
+                                                    <input type="file" id="image" accept="image/*" onChange={(e) => handleCapture(e.target, "image")} required />
+                                                    <label class="form-label" for="image">Image Upload</label>
+                                                    {location.state && <h6 style = {{color:'red'}}> image already uploaded </h6>}
+                                                </div>
+                                                {/* 
                                                 <Accordion>
                                                     <AccordionSummary
                                                         expandIcon={<ExpandMoreIcon />}
@@ -177,13 +216,13 @@ const CleanerOnboarding = () => {
                                                         <input type="file" id="permanentAddress" onChange={(e) => setimgurl(e.target.value)} />
                                                         <label>Upload</label>
                                                     </AccordionDetails>
+                                                    
                                                     <AccordionDetails>
-                                                        {/* <button style = {{border:'none'}}  >Camera</button> */}
                                                         <input type="file" name="image" accept="image/*" id="file-input" capture="user" onChange={(e) => handleCapture(e.target)} />
                                                         <label for='file-input'>Camera</label>
 
                                                     </AccordionDetails>
-                                                </Accordion>
+                                                </Accordion> */}
 
                                             </div>
 

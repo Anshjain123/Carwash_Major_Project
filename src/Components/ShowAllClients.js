@@ -18,7 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import { useNavigate } from 'react-router';
 
-const ShowAllCleaners = () => {
+const ShowAllClients = () => {
 
     const [allCleaners, setallCleaners] = useState(null);
     const [Val, setVal] = useState(null);
@@ -27,19 +27,18 @@ const ShowAllCleaners = () => {
     const fun = async () => {
         let arr = [];
 
-        const querySnapshot = await getDocs(collection(db, "cities"));
+        const querySnapshot = await getDocs(collection(db, "client"));
         querySnapshot.forEach((doc) => {
-            // console.log(doc.id, " => ", doc.data());
             let obj = {
-                Name: doc.data().Name,
-                dob: doc.data().DOB,
+                name: doc.data().name,
                 phoneNumber: doc.data().phoneNumber,
-                currentaddress: doc.data().currAddress,
-                permanentAddress: doc.data().permanentAddress,
-                email: doc.data().email,
-                adhaar: doc.data().adhaar,
-                imgurl: doc.data().imgurl,
-                gender: doc.data().gender
+                gender: doc.data().gender,
+                description: doc.data().description,
+                address: doc.data().address,
+                carNumber: doc.data().CarNumber,
+                carModel: doc.data().carModel,
+                age: doc.data().age,
+                plan: doc.data().plan
             }
             arr.push(obj);
         });
@@ -49,27 +48,14 @@ const ShowAllCleaners = () => {
 
 
     const handleDelete = async (id) => {
-        await deleteDoc(doc(db, "cities", `${id}`));
+        await deleteDoc(doc(db, "client", `${id}`));
         toast.success("Deleted Cleaner Successfully!");
         setcount(count + 1);
     }
 
-    const fetchUrl = async (url) => {
-
-        let blob = await fetch(url).then(r => r.blob());
-
-        const reader = new FileReader();
-        console.log(url)
-        reader.readAsDataURL(blob);
-        // let blob = await fetch(url).then(r => r.blob());
-        // console.log(blob);  
-    } 
 
     const handleUpdate = async (row) => {
-
-        // fetchUrl(row.imgurl);
-
-        navigate("/register", { state: { name: row.Name, dob: row.dob, phoneNumber: row.phoneNumber, currAddress: row.currentaddress, permanentAddress: row.permanentAddress, email: row.email, adhaar: row.adhaar, imgurl: row.imgurl, gender: row.gender } })
+        navigate("/registerClients", { state: row }); 
     }
 
     useEffect(() => {
@@ -79,7 +65,7 @@ const ShowAllCleaners = () => {
 
         <div style={{ padding: '50px' }}>
             <div style={{ paddingBottom: '15px', paddingTop:'20px' }}>
-                <Fab onClick={() => navigate("/register")} color="dark" aria-label="add">
+                <Fab onClick={() => navigate("/registerClients")} color="dark" aria-label="add">
                     <AddIcon />
                 </Fab>
             </div>
@@ -90,9 +76,13 @@ const ShowAllCleaners = () => {
                         <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell align="right">PhoneNumber</TableCell>
-                            <TableCell align="right">DOB</TableCell>
-                            <TableCell align="right">CurrentAddress</TableCell>
-                            <TableCell align="right">PermanentAddress</TableCell>
+                            <TableCell align="right">Gender</TableCell>
+                            <TableCell align="right">description</TableCell>
+                            <TableCell align="right">address</TableCell>
+                            <TableCell align="right">CarModel</TableCell>
+                            <TableCell align="right">CarNumber</TableCell>
+                            <TableCell align="right">age</TableCell>
+                            <TableCell align="right">Plan</TableCell>
                             <TableCell align="right">Delete</TableCell>
                             <TableCell align="right">Update</TableCell>
                         </TableRow>
@@ -103,12 +93,16 @@ const ShowAllCleaners = () => {
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">{row.Name}</TableCell>
+                                <TableCell component="th" scope="row">{row.name}</TableCell>
                                 <TableCell align="right">{row.phoneNumber}  </TableCell>
-                                <TableCell align="right">{row.dob} </TableCell>
-                                <TableCell align="right">{row.currentaddress} </TableCell>
-                                <TableCell align="right">{row.permanentAddress} </TableCell>
-                                <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.email)} /></TableCell>
+                                <TableCell align="right">{row.gender} </TableCell>
+                                <TableCell align="right">{row.description} </TableCell>
+                                <TableCell align="right">{row.address} </TableCell>
+                                <TableCell align="right">{row.carModel} </TableCell>
+                                <TableCell align="right">{row.carNumber} </TableCell>
+                                <TableCell align="right">{row.age} </TableCell>
+                                <TableCell align="right">{row.plan} </TableCell>
+                                <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.phoneNumber)} /></TableCell>
                                 <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
                             </TableRow>
                         ))}
@@ -119,4 +113,4 @@ const ShowAllCleaners = () => {
     )
 }
 
-export default ShowAllCleaners
+export default ShowAllClients

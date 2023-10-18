@@ -1,0 +1,25 @@
+.shaded-container {
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Add padding to the container */
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  
+}
+
+/* Style for form labels */
+.MuiFormLabel-root {
+  font-size: 18px;
+  color: #333; /* Change text color to a darker shade */
+}
+
+/* Style for radio buttons and labels */
+.MuiRadio-root {
+  padding: 10px; /* Increase padding around radio buttons */
+  color: #333; /* Change text color for radio labels */
+}
+
+/* Style for the submit button */
+.MuiButton-containedPrimary {
+  margin-top: 20px; /* Add some space between the form and the button */
+}
