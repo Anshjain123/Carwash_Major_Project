@@ -15,6 +15,7 @@ import Cardetails from './Components/Cardetails';
 import Plans from './Components/Plans';
 import ResponsiveAppBar from './Components/ResponsiveAppBar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AssignCleanersCars from './Components/AssignCleanersCars';
 
 function App() {
 
@@ -70,6 +71,7 @@ function App() {
           <Route path='/cleaners' element={<ShowAllCleaners />} />
           <Route path='/webcam' element={<CustomWebcam />} />
           <Route path='/register' element={<CleanerOnboarding />} />
+          <Route path='/mapcleaners' element={<AssignCleanersCars/>} /> 
         </Routes>
       </div>
 

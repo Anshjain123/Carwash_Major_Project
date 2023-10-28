@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import './CleanerOnboarding.css'
 import { useLocation, useNavigate } from 'react-router';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { doc, setDoc } from "firebase/firestore";
 import { db } from '../firebase';
@@ -9,7 +8,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
-import { getStorage, ref } from "firebase/storage";
+// import { getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { Toaster, toast } from 'react-hot-toast';
 
 const CleanerOnboarding = () => {
@@ -27,27 +26,45 @@ const CleanerOnboarding = () => {
     const [error, seterror] = useState(null);
     const navigate = useNavigate();
 
-    const handleNavigate = (e) => {
-        console.log(e.target.value);
-    }
+    // const handleNavigate = (e) => {
+    //     console.log(e.target.value);
+    // }
 
-    const [type, settype] = useState(null)
+    // const [type, settype] = useState(null)
     const handleCapture = async (target, Type) => {
         console.log(target);
         if (target.files) {
             const file = target.files[0];
-            
-            const storage = getStorage();
-            var storagePath = "images/" + file.name; 
-            const storageRef = ref(storage, storagePath);
-             
-            // console.log(file.name); 
 
-            const type = typeof (file);
-            settype(type);
+            // const storage = getStorage();
+            // var storagePath = "images/" + file.name;
+            // const storageRef = ref(storage, storagePath);
+            // const uploadTask = uploadBytesResumable(storageRef, file);
+
+            // uploadTask.on('state_changed', (snapshot) => {
+            //     const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            //     console.log("upload is " + prog + '% done');
+            //     // setprogress(prog);
+            //     if (prog === 100) {
+            //         toast.success("Your File has been successfully uploaded");
+            //     }
+            // }, (error) => {
+            //     console.log(error);
+            // }, async () => {
+            //     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadUrl) => {
+            //         console.log("File Available at" + downloadUrl);
+            //         console.log(downloadUrl)
+            //         setimgurl(downloadUrl);
+
+            //     })
+            // })
+            // // console.log(file.name); 
+
+            // const type = typeof (file);
+            // settype(type);
             const newUrl = URL.createObjectURL(file);
-        
-            if(Type === "adhaar") {
+
+            if (Type === "adhaar") {
                 setadhaar(newUrl);
                 console.log(newUrl)
             } else {
@@ -58,8 +75,8 @@ const CleanerOnboarding = () => {
     }
 
     const handleSubmit = async (e) => {
-        
-        if(Name === undefined || imgurl === undefined || BirthDate === undefined || email === undefined || Curraddress == undefined || permanentAddress === undefined || gender === undefined || phoneNumber === undefined || adhaar === undefined) {
+
+        if (Name === undefined || imgurl === undefined || BirthDate === undefined || email === undefined || Curraddress === undefined || permanentAddress === undefined || gender === undefined || phoneNumber === undefined || adhaar === undefined) {
             toast.error("required fields are empty!");
             return;
         }
@@ -76,7 +93,8 @@ const CleanerOnboarding = () => {
             phoneNumber: phoneNumber,
             adhaar: adhaar,
             imgurl: imgurl,
-            gender:gender 
+            gender: gender,
+            assignedCars:[1,2,3], 
         });
         toast.success("Cleaner registered successfully!");
         navigate("/cleaners")
@@ -167,20 +185,20 @@ const CleanerOnboarding = () => {
                                         </div>
                                         <div class="col-md-6">
 
-                                
-                                                <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
-                                                <RadioGroup
-                                                    aria-labelledby="demo-radio-buttons-group-label"
-                                                    defaultValue={location.state ? gender : "female"}
-                                                    name="radio-buttons-group"
-                                                    sx={{display:'flex', flexDirection:'row'}}
-                                                    onChange={(e) => setgender(e.target.value)}   
-                                                    required
-                                                >
-                                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                                    <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
-                                                </RadioGroup>
+
+                                            <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                                            <RadioGroup
+                                                aria-labelledby="demo-radio-buttons-group-label"
+                                                defaultValue={location.state ? gender : "female"}
+                                                name="radio-buttons-group"
+                                                sx={{ display: 'flex', flexDirection: 'row' }}
+                                                onChange={(e) => setgender(e.target.value)}
+                                                required
+                                            >
+                                                <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                                <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                                <FormControlLabel value="other" control={<Radio />} label="Other" />
+                                            </RadioGroup>
                                             {/* </FormControl> */}
 
                                         </div>
@@ -192,7 +210,7 @@ const CleanerOnboarding = () => {
                                                 <div class="form-outline">
                                                     <input type="file" id="adhaar" onChange={(e) => handleCapture(e.target, "adhaar")} required />
                                                     <label class="form-label" for="adhaar">Adhaar Card Upload</label>
-                                                    {location.state && <h6 style = {{color:'red'}}> adhaar already uploaded </h6>}
+                                                    {location.state && <h6 style={{ color: 'red' }}> adhaar already uploaded </h6>}
                                                 </div>
 
                                             </div>
@@ -201,7 +219,7 @@ const CleanerOnboarding = () => {
                                                 <div class="form-outline">
                                                     <input type="file" id="image" accept="image/*" onChange={(e) => handleCapture(e.target, "image")} required />
                                                     <label class="form-label" for="image">Image Upload</label>
-                                                    {location.state && <h6 style = {{color:'red'}}> image already uploaded </h6>}
+                                                    {location.state && <h6 style={{ color: 'red' }}> image already uploaded </h6>}
                                                 </div>
                                                 {/* 
                                                 <Accordion>

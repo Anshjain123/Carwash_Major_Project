@@ -5,11 +5,8 @@ import './Plans.css'
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import packages from '../packages.jpeg'
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import { Toaster, toast } from "react-hot-toast";
 
 function Plans() {
@@ -31,7 +28,7 @@ function Plans() {
   const handleSubmit = async (e) => {
 
     if(selectedPlan === undefined) {
-      toast.error("choose atleast one plan!"); 
+      toast.error("choose a plan!"); 
       return; 
     }
     e.preventDefault();
@@ -45,7 +42,8 @@ function Plans() {
       address: location.state.address,
       CarNumber: location.state.CarNumber,
       phoneNumber: location.state.phoneNumber,
-      plan: selectedPlan
+      plan: selectedPlan,
+      allCars: location.state.allCars
     })
     navigate("/clients");
   }
