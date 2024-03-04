@@ -17,54 +17,109 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import { useNavigate } from 'react-router';
+import "./ShowAllClients.css"
+
 
 const ShowAllClients = () => {
 
-    const [allCleaners, setallCleaners] = useState(null);
+    // const [allCleaners, setallCleaners] = useState(null);
+    const [clients, setclients] = useState(null)
     const [Val, setVal] = useState(null);
     const navigate = useNavigate();
     const [count, setcount] = useState(0)
-    const fun = async () => {
-        let arr = [];
 
-        const querySnapshot = await getDocs(collection(db, "client"));
-        querySnapshot.forEach((doc) => {
-            let obj = {
-                name: doc.data().name,
-                phoneNumber: doc.data().phoneNumber,
-                gender: doc.data().gender,
-                description: doc.data().description,
-                address: doc.data().address,
-                carNumber: doc.data().CarNumber,
-                carModel: doc.data().carModel,
-                age: doc.data().age,
-                plan: doc.data().plan
+
+    const retrieveAllClients = async () => {
+
+        try {
+            let response = await fetch("http://localhost:8080/admin/client/getAll", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+
+            if (response.ok) {
+                // console.log(response); 
+                try {
+                    let res = await response.json();
+                    // console.log(res);
+                    // setclients(res);
+
+                    let arr = [];
+                    for (let i = 0; i < res.length; i++) {
+                        let obj = res[i];
+                        let carsArr = obj.allClientCars;
+                        // console.log(carsArr); 
+                        delete obj.allClientCars;
+                        let newObj = {}
+                        for (let j = 0; j < carsArr.length; j++) {
+                            let car = carsArr[j];
+
+                            const concatenatedObj = { ...car, ...obj };
+                            arr.push(concatenatedObj);
+                        }
+
+                    }
+
+                    setclients(arr);
+
+                    // console.log("printing updated clients", clients);
+                } catch (error) {
+                    console.log(error);
+                }
             }
-            arr.push(obj);
-        });
+        } catch (error) {
+            console.log(error);
+        }
 
-        setallCleaners(arr);
     }
 
 
-    const handleDelete = async (id) => {
-        await deleteDoc(doc(db, "client", `${id}`));
-        toast.success("Deleted Cleaner Successfully!");
+    const handleDelete = async (carNumber) => {
+
+        let res = await fetch(`http://localhost:8080/admin/client/delete/${carNumber}`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': "application/json"
+            }
+        })
+        // console.log(res);
         setcount(count + 1);
     }
 
 
     const handleUpdate = async (row) => {
-        navigate("/registerClients", { state: row }); 
+
+        let allClientCars = [
+            {
+                carModel: row.carModel,
+                carNumber: row.carNumber,
+                description: row.description,
+                assigned: row.assigned
+            }
+        ]
+
+        let body = {
+            name: row.name,
+            age: row.age,
+            gender: row.gender,
+            address: row.address,
+            phone: row.phone, 
+            plan: row.plan, 
+            allClientCars: allClientCars
+        }
+        navigate("/registerClients", { state: body });
     }
 
     useEffect(() => {
-        fun();
+        retrieveAllClients();
     }, [count])
     return (
 
-        <div style={{ padding: '50px' }}>
-            <div style={{ paddingBottom: '15px', paddingTop:'20px' }}>
+        <div className='showAllClients' style={{ padding: '50px' }}>
+            <div style={{ paddingBottom: '15px', paddingTop: '20px' }}>
                 <Fab onClick={() => navigate("/registerClients")} color="dark" aria-label="add">
                     <AddIcon />
                 </Fab>
@@ -79,8 +134,8 @@ const ShowAllClients = () => {
                             <TableCell align="right">Gender</TableCell>
                             <TableCell align="right">description</TableCell>
                             <TableCell align="right">address</TableCell>
-                            <TableCell align="right">CarModel</TableCell>
-                            <TableCell align="right">CarNumber</TableCell>
+                            <TableCell align="right">carModel</TableCell>
+                            <TableCell align="right">carNumber</TableCell>
                             <TableCell align="right">age</TableCell>
                             <TableCell align="right">Plan</TableCell>
                             <TableCell align="right">Delete</TableCell>
@@ -88,13 +143,17 @@ const ShowAllClients = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {allCleaners && allCleaners.map((row, index) => (
+                        {clients && clients.map((row, index) => (
+
                             <TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
+
+
+
                                 <TableCell component="th" scope="row">{row.name}</TableCell>
-                                <TableCell align="right">{row.phoneNumber}  </TableCell>
+                                <TableCell align="right">{row.phone}  </TableCell>
                                 <TableCell align="right">{row.gender} </TableCell>
                                 <TableCell align="right">{row.description} </TableCell>
                                 <TableCell align="right">{row.address} </TableCell>
@@ -102,10 +161,11 @@ const ShowAllClients = () => {
                                 <TableCell align="right">{row.carNumber} </TableCell>
                                 <TableCell align="right">{row.age} </TableCell>
                                 <TableCell align="right">{row.plan} </TableCell>
-                                <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.phoneNumber)} /></TableCell>
+                                <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
                                 <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
                             </TableRow>
-                        ))}
+                        ))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>

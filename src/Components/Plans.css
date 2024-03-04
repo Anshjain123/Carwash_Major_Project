@@ -3,7 +3,8 @@
   padding: 10px; /* Add padding to the container */
   text-align: center;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  /* justify-content: space-around; */
   
 }
 
@@ -22,4 +23,19 @@
 /* Style for the submit button */
 .MuiButton-containedPrimary {
   margin-top: 20px; /* Add some space between the form and the button */
+}
+
+.plans {
+  background: linear-gradient(
+      to right,
+      rgba(31, 28, 88, 0.9) 10%,
+      rgba(31, 28, 88, 0.7) 50%,
+      rgba(31, 28, 88, 0.1) 100%
+    ),
+      url("https://www.shutterstock.com/image-photo/summer-car-wash-cleaning-high-600nw-2292007309.jpg");
+  padding: 10px;
+  height: 90vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
 }

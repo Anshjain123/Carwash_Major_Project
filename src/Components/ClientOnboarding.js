@@ -10,19 +10,23 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { useLocation, useNavigate } from "react-router";
 import { Toaster, toast } from "react-hot-toast";
-
-
+import LoadingBar from 'react-top-loading-bar'
+import ErrorIcon from '@mui/icons-material/Error';
+import Tooltip from '@mui/material/Tooltip';
 
 function ClientOnboarding() {
 
     // const [Data, setData] = useState({ fullName: "", age: "", address: "", gender: "male" });
     const navigate = useNavigate();
     const location = useLocation();
-    const [FullName, setFullName] = useState(location?.state?.name);
+    const [name, setname] = useState(location?.state?.name);
     const [age, setage] = useState(location?.state?.age);
     const [address, setaddress] = useState(location?.state?.address);
     const [gender, setgender] = useState(location?.state?.gender)
-    const [PhoneNumber, setPhoneNumber] = useState(location?.state?.phoneNumber);
+    const [phone, setphone] = useState(location?.state?.phone);
+    const [progress, setprogress] = useState(0);
+    const [password, setpassword] = useState(location?.state?.password);
+    const [error, seterror] = useState(false); 
     // const ChangeData = (e) => {
     //     const { name, value } = e.target;
     //     setData((prevData) => ({
@@ -37,19 +41,83 @@ function ClientOnboarding() {
 
     const handleNext = () => {
 
-        if(FullName === undefined || age === undefined || address === undefined || gender === undefined || PhoneNumber === undefined) {
-            toast.error("Required fields are empty!");
+        if (name === undefined || age === undefined || address === undefined || gender === undefined || phone === undefined) {
+            toast.error("Required fields are empty or fields are wrong!");
             return;
         }
-        navigate('/cardetails', { state: { name: FullName, age: age, address: address, gender: gender, PhoneNumber: PhoneNumber, carModel: location?.state?.carModel, carNumber: location?.state?.carNumber, description: location?.state?.description, plan:location?.state?.plan } })
+
+        setprogress(10);
+        setprogress(20);
+        setprogress(40);
+        setprogress(50);
+        setprogress(70);
+        setprogress(90);
+
+
+
+        let body;
+        let flag;
+        if (location?.state) {
+            location.state.name = name;
+            location.state.age = age;
+            location.state.address = address;
+            location.state.gender = gender;
+            body = location.state;
+            flag = "update";
+        } else {
+            flag = "add"
+            body = {
+                name: name,
+                age: age,
+                gender: gender,
+                address: address,
+                phone: phone,
+                password: password
+            }
+        }
+
+        navigate('/cardetails', { state: { body, flag: flag } });
+
+
+        setprogress(100);
+
+    }
+
+    const isEveryDigit =(phone) => {
+
+        for(let i = 0; i < phone.length; i++) {
+            if(!(phone[i] >= '0' && phone[i] <= '9')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    const isValidPhone =(phone) => {
+        return (phone.length == 10 && isEveryDigit(phone)); 
+    }
+
+    const handleChangePhone =(e) => {
+        if(isValidPhone(e.target.value)) {
+            seterror(false); 
+        } else {
+            seterror(true); 
+        }
+        setphone(e.target.value);  
     }
 
     return (
-        <div>
-            <Toaster/>
+        <div className="clientOnBoarding">
+            <Toaster />
+
+            <LoadingBar
+                color='#f11946'
+                progress={progress}
+                onLoaderFinished={() => setprogress(0)}
+            />
             <div className="container">
                 <form>
-                    <h1 style={{ display: "flex", justifyContent: "center", color: "black", fontFamily: "inherit", textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}>Client Details</h1>
+                    <h1 style={{ display: "flex", justifyContent: "center", color: "black", fontFamily: "inherit", }}>Client Details</h1>
 
                     <div className="ui divider"></div>
                     <div className="ui form">
@@ -62,10 +130,10 @@ function ClientOnboarding() {
                                         name="fullName"
                                         label="Full Name"
                                         variant="standard"
-                                      required
-                                        value={FullName}
-                                        onChange={(e) => setFullName(e.target.value)} />
-                                      
+                                        required
+                                        value={name}
+                                        onChange={(e) => setname(e.target.value)} />
+
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <TextField id="Two" name="age" label="Age" variant="standard" value={age} onChange={(e) => setage(e.target.value)} required />
@@ -92,12 +160,35 @@ function ClientOnboarding() {
                                 <TextField
                                     id="standard-textarea"
                                     label="Phone Number"
-                                    placeholder="Phone Number"
+                                    placeholder="Phone Number (must be of 10 digits)"
                                     variant="standard"
                                     name="phone number"
                                     type='tel'
-                                    value={PhoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    disabled={location.state ? true : false}
+                                    value={phone}
+                                    onChange={handleChangePhone}
+                                    sx={{ width: "100%" }}
+                                    required
+                                />
+                                {error && <div style={{ color: 'red', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+                                    
+                                    <Tooltip title="phone number must of length 10" placement="top">
+                                        <ErrorIcon/>
+                                    </Tooltip>
+                                    
+                                    </div>}
+                            </div>
+
+                            <div className="field">
+                                <TextField
+                                    id="standard-textarea"
+                                    label="Password"
+                                    placeholder="Password"
+                                    variant="standard"
+                                    name="Password"
+                                    type='password'
+                                    value={password}
+                                    onChange={(e) => setpassword(e.target.value)}
                                     sx={{ width: "100%" }}
                                     required
                                 />

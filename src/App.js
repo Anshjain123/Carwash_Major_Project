@@ -16,6 +16,8 @@ import Plans from './Components/Plans';
 import ResponsiveAppBar from './Components/ResponsiveAppBar';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AssignCleanersCars from './Components/AssignCleanersCars';
+import TermsAndConditions from './Components/TermsAndConditions';
+import GetImagesDayWise from './Components/GetImagesDayWise';
 
 function App() {
 
@@ -72,6 +74,8 @@ function App() {
           <Route path='/webcam' element={<CustomWebcam />} />
           <Route path='/register' element={<CleanerOnboarding />} />
           <Route path='/mapcleaners' element={<AssignCleanersCars/>} /> 
+          <Route path='/terms' element={<TermsAndConditions/>} />
+          <Route path='/getImagesDayWise' element={<GetImagesDayWise/>} />
         </Routes>
       </div>
 

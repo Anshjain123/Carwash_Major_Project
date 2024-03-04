@@ -1,9 +1,8 @@
 .container {
   display: flex !important;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
   /* width: 40%; */
   margin: auto;
 }
@@ -62,4 +61,37 @@ p {
   .container {
     width: 95%;
   }
+}
+
+.gradient-custom {
+  background: linear-gradient(
+      to right,
+      rgba(31, 28, 88, 0.9) 10%,
+      rgba(31, 28, 88, 0.7) 50%,
+      rgba(31, 28, 88, 0.1) 100%
+    ),
+      url("https://www.shutterstock.com/image-photo/summer-car-wash-cleaning-high-600nw-2292007309.jpg");
+  padding: 10px;
+  height: 90vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.clientOnBoarding {
+  background: linear-gradient(
+      to right,
+      rgba(31, 28, 88, 0.9) 10%,
+      rgba(31, 28, 88, 0.7) 50%,
+      rgba(31, 28, 88, 0.1) 100%
+    ),
+      url("https://www.shutterstock.com/image-photo/summer-car-wash-cleaning-high-600nw-2292007309.jpg");
+  padding: 10px;
+  height: 90vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex ;
+  justify-content: center;
+  align-items: center;
 }

@@ -14,10 +14,14 @@ import Modal from '@mui/material/Modal';
 import { collection, getDoc, getDocs, arrayUnion, updateDoc, arrayRemove } from "firebase/firestore";
 import { db } from '../firebase';
 import { doc, setDoc } from "firebase/firestore";
+import { Try } from '@mui/icons-material';
+import toast, { Toaster } from 'react-hot-toast';
+import "./AssignCleanersCars.css"
+
 
 const AssignCleanersCars = () => {
 
-    const [allCars, setallCars] = useState([]);
+    const [allClientCars, setallClientCars] = useState([]);
     const [allCleaners, setallCleaners] = useState([]);
     const [carNumber, setcarNumber] = useState("");
     const [carModel, setcarModel] = useState("");
@@ -30,55 +34,63 @@ const AssignCleanersCars = () => {
     useEffect(() => {
         const getCleaners = async () => {
 
-            const querySnapshot = await getDocs(collection(db, "cities"))
-            let arr = [];
-            querySnapshot.forEach((doc) => {
+            try {
 
-                let newcleaner = {
-                    email: doc.id,
-                    name: doc.data().Name,
-                    phoneNumber: doc.data().phoneNumber
+                let res = await fetch("http://localhost:8080/admin/cleaner/getAll", {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+
+                try {
+
+                    let response = await res.json();
+                    // console.log("printing all cleaners", response);
+                    setallCleaners(response);
+                } catch (error) {
+                    console.log("printing error in assigningcleanercars in .json", error)
                 }
-                arr.push(newcleaner);
-                console.log(doc.id, " => ", doc.data());
-            });
+            } catch (error) {
+                console.log("printing error in assigncleaners car in fetching", error);
+            }
 
-            setallCleaners(arr);
         }
         getCleaners();
 
 
-        const getClients = async () => {
-            const querySnapshot = await getDocs(collection(db, "client"));
-            let arr = [];
+        const getClientCars = async () => {
 
-            querySnapshot.forEach((doc) => {
+            try {
 
-                let cars = doc.data().allCars;
-                cars.forEach((car) => {
-                    let newObj = {
-                        carModel: car.carModel,
-                        carNumber: car.carNumber,
-                        description: car.description,
-                        id: doc.id,
-                        assigned: car.assigned
+                let res = await fetch("http://localhost:8080/admin/assignCars/getAll", {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-
-                    arr.push(newObj);
                 })
-            })
 
-            setallCars(arr);
+                try {
+                    let response = await res.json();
+                    console.log("printing cars", response);
+                    setallClientCars(response);
+                } catch (error) {
+                    console.log(error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
         }
 
-        getClients();
+        getClientCars();
     }, [])
 
 
 
 
 
-    console.log(allCars);
+    // console.log(allClientCars);
 
     const style = {
         position: 'absolute',
@@ -106,57 +118,52 @@ const AssignCleanersCars = () => {
     const handleClose = () => setOpen(false);
 
 
-    const handleassign = async (email, name, phoneNumber) => {
-        console.log(carNumber);
-        let docRef = doc(db, "cities", `${email}`);
-        let docSnap = await getDoc(docRef);
+    const handleassign = async (email, name, phone) => {
 
+        try {
 
-        if (docSnap.exists()) {
-            let newObj = {
-                carNumber: carNumber,
-                carModel: carModel,
-                description: description,
-                id: id
+            let body = {
+                email: email,
+                phone: phone,
+                carNumber: carNumber
             }
-            // Atomically add a new region to the "regions" array field.
-            await updateDoc(docRef, {
-                assignedCars: arrayUnion(newObj)
-            });
+            let res = await fetch("http://localhost:8080/admin/assignCars/assignCarToCleaners", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+
+            })
+
+
+            console.log("Printing assigning cars to cleaners response", res);
+            toast.success("Successfully assigned")
+
+            handleClose();
+        } catch (error) {
+            console.log(error);
         }
-
-        docRef = doc(db, "client", `${id}`);
-
-        let newObj = {
-            carNumber: carNumber,
-            carModel: carModel,
-            description: description,
-            assigned: false
-        }
-        // Atomically remove a region from the "regions" array field.
-        await updateDoc(docRef, {
-            allCars: arrayRemove(newObj)
-        });
-
-        newObj.assigned = true;
-        // Atomically add a new region to the "regions" array field.
-        await updateDoc(docRef, {
-            allCars: arrayUnion(newObj)
-        });
-
-        await setDoc(doc(db, 'mappingCartocleaner', `${id}`), {  
-            cleanerName:name, 
-            cleanerPhoneNumber:phoneNumber
-        })
-
-        setassigned(true); 
-        
 
     }
 
-    console.log("Printing all cars-> ", allCars);
+    const handleUnAssign = async (carNumber) => {
+
+        let res = await fetch("http://localhost:8080/admin/assignCars/unassign", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ carNumber: carNumber })
+        })
+
+        console.log(res); 
+    }
+
+    // console.log("Printing all cars-> ", allClientCars);
     return (
-        <div style={{ padding: '80px' }} >
+        <div className='assignCleanerCars' style={{ padding: '80px' }} >
+            <Toaster />
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -168,7 +175,7 @@ const AssignCleanersCars = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {allCars.map((row, index) => (
+                        {allClientCars.map((row, index) => (
                             <TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -178,7 +185,7 @@ const AssignCleanersCars = () => {
                                 </TableCell>
                                 <TableCell align="right">{row.carModel}</TableCell>
                                 <TableCell align="right">{row.description}</TableCell>
-                                <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green' }} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
+                                <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
 
                                 {/* <TableCell align="right">NO</TableCell> */}
                             </TableRow>
@@ -198,7 +205,7 @@ const AssignCleanersCars = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>name</TableCell>
-                                    <TableCell align="right">PhoneNumber</TableCell>
+                                    <TableCell align="right">Phone</TableCell>
                                     <TableCell align="right">email</TableCell>
                                     <TableCell align="right">Assign</TableCell>
                                 </TableRow>
@@ -212,9 +219,9 @@ const AssignCleanersCars = () => {
                                         <TableCell component="th" scope="row">
                                             {row.name}
                                         </TableCell>
-                                        <TableCell align="right">{row.phoneNumber}</TableCell>
+                                        <TableCell align="right">{row.phone}</TableCell>
                                         <TableCell align="right">{row.email}</TableCell>
-                                        <TableCell align="right"><Button sx={{ color: 'white' }} onClick={() => handleassign(row.email, row.name, row.phoneNumber)} >Assign</Button></TableCell>
+                                        <TableCell align="right"><Button sx={{ color: 'white' }} onClick={() => handleassign(row.email, row.name, row.phone)} >Assign</Button></TableCell>
 
                                         {/* <TableCell align="right">NO</TableCell> */}
                                     </TableRow>
@@ -238,7 +245,7 @@ export default AssignCleanersCars
 
 
 
-// const AllCars = [
+// const allClientCars = [
 //     {
 //         carNumber: '123',
 //         carModel: 'creta',

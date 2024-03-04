@@ -1,0 +1,22 @@
+.getimagesdaywise {
+    background: linear-gradient(
+        to right,
+        rgba(31, 28, 88, 0.9) 10%,
+        rgba(31, 28, 88, 0.7) 50%,
+        rgba(31, 28, 88, 0.1) 100%
+      ),
+        url("https://www.shutterstock.com/image-photo/summer-car-wash-cleaning-high-600nw-2292007309.jpg");
+    padding: 10px;
+    height: 90vh;
+    width: 100vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.query {
+    background-color: white;
+    padding: 10px;
+    width: 90vw;
+}
+.button {
+    padding: 10px;
+}

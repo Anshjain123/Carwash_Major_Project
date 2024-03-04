@@ -6,12 +6,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: `"AIzaSyAm6tXaiikbPNMV-CFUAr0TxbWbXZWYpv0"`,
-  authDomain: "carwashmajorproject.firebaseapp.com",
-  projectId: "carwashmajorproject",
-  storageBucket: "carwashmajorproject.appspot.com",
-  messagingSenderId: "606965000934",
-  appId: "1:606965000934:web:050b06ee8d99c94e3a2927"
+  apiKey: "AIzaSyBxDuiN-IhuSs5u-38P2uUnR7A4sjaZTOI",
+  authDomain: "majorprojectcarwash.firebaseapp.com",
+  projectId: "majorprojectcarwash",
+  storageBucket: "majorprojectcarwash.appspot.com",
+  messagingSenderId: "429589755715",
+  appId: "1:429589755715:web:6553aeb9fc824bf8b9a1f6"
 };
 
 // Initialize Firebase

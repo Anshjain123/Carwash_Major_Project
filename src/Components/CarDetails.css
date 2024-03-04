@@ -1,10 +1,10 @@
-#icon {
-  cursor: pointer;
-  font-size: 18px;
-  color: darkgray;
-}
-.showAllCleaners {
-  background: linear-gradient(
+.carDetails {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: column; */
+    height: 90vh;
+    background: linear-gradient(
       to right,
       rgba(31, 28, 88, 0.9) 10%,
       rgba(31, 28, 88, 0.7) 50%,
@@ -16,6 +16,8 @@
   width: 100vw;
   background-repeat: no-repeat;
   background-size: cover;
-  /* z-index: -1; */
-  /* top: -10; */
+}
+.container {
+    display: flex; 
+    flex-direction: column;
 }

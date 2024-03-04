@@ -4,70 +4,85 @@ import { useLocation, useNavigate } from "react-router";
 import { Toaster, toast } from "react-hot-toast";
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
+import "./CarDetails.css"
+
 
 function Cardetails() {
 
 
+
     const location = useLocation();
-    const [CarModel, setCarModel] = useState(location?.state?.carModel);
-    const [CarNumber, setCarNumber] = useState(location?.state?.carNumber);
-    const [description, setdescription] = useState(location?.state?.description);
-    
-    const [allCars, setallCars] = useState([]);
+    console.log(location.state.body);
+    const [carModel, setCarModel] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carModel : undefined));
+    const [carNumber, setCarNumber] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carNumber : undefined));
+    const [description, setdescription] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].description : undefined));
+    const [handleAddCarFlag, sethandleAddCarFlag] = useState((location.state.flag == "update" ? true : false));
+
+
+    const [allClientCars, setallClientCars] = useState([]);
 
     const navigate = useNavigate();
     const handleNext = () => {
 
-        if (CarModel === undefined || CarNumber === undefined || description === undefined) {
+        if (carModel === undefined || carNumber === undefined || description === undefined) {
             toast.error("required fields are empty!");
             return;
         }
 
         const newObj = {
-            carModel: CarModel, 
-            carNumber: CarNumber, 
+            carModel: carModel,
+            carNumber: carNumber,
             description: description,
-            assigned:false 
+            assigned: false
         }
 
-        let arr = allCars; 
-        arr.push(newObj); 
-        
-        setallCars([...allCars, newObj]);
-        console.log("Before going to next we checking if allcars are set or not", allCars, "arr->", arr); 
+        let arr = allClientCars;
+        arr.push(newObj);
 
-        navigate("/plans", { state: { name: location.state.name, age: location.state.age, address: location.state.address, gender: location.state.gender, carModel: CarModel, CarNumber: CarNumber, description: description, phoneNumber: location.state.PhoneNumber, plan: location?.state?.plan, allCars: allCars} });
+        setallClientCars([...allClientCars, newObj]);
+        // console.log("Before going to next we checking if allClientCars are set or not", allClientCars, "arr->", arr);
+
+        let body;
+        let flag;
+
+        location.state.body.allClientCars = allClientCars;
+        body = location.state.body;
+        flag = location.state.flag;
+
+        navigate("/plans", { state: { body, flag } });
     }
+
 
 
     const handleAddCar = () => {
 
-        if (!(CarModel === undefined || CarNumber === undefined || description === undefined)) {
+
+        if (!(carModel === undefined || carNumber === undefined || description === undefined)) {
+            sethandleAddCarFlag(false);
             const newObj = {
-                carModel: CarModel, 
-                carNumber: CarNumber, 
+                carModel: carModel,
+                carNumber: carNumber,
                 description: description,
-                assigned:false
+                assigned: false
             }
-    
-            setallCars([...allCars, newObj]);    
+
+            setallClientCars([...allClientCars, newObj]);
         }
 
         console.log("handleaddcar");
         setCarModel("");
         setCarNumber("");
         setdescription("");
-        
-
     }
+    // console.log(handleAddCarFlag, carNumber);
 
     return (
-        <div>
+        <div className="carDetails" >
             <Toaster />
-            <div className="container">
+            <div className="container"  >
 
                 <form>
-                    <h1 style={{ display: "flex", justifyContent: "center", color: "black", fontFamily: "inherit", textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}>Car Details</h1>
+                    <h1 style={{ display: "flex", justifyContent: "center", alignItems: 'center', color: "black", fontFamily: "inherit" }}>Car Details</h1>
 
                     <div className="ui divider"></div>
                     <div className="ui form">
@@ -80,12 +95,12 @@ function Cardetails() {
                                         name="CarModel"
                                         label="Car Model"
                                         variant="standard"
-                                        value={CarModel}
+                                        value={carModel}
                                         required
                                         onChange={(e) => setCarModel(e.target.value)} />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <TextField required id="Two" name="CarNumber" label="Car Number" variant="standard" value={CarNumber} onChange={(e) => setCarNumber(e.target.value)} />
+                                    <TextField required id="Two" name="CarNumber" label="Car Number" variant="standard" value={carNumber} disabled={handleAddCarFlag} onChange={(e) => setCarNumber(e.target.value)} />
                                 </div>
                             </div>
 
@@ -94,14 +109,15 @@ function Cardetails() {
                                 <TextField
                                     required
                                     id="standard-textarea"
-                                    label="Discription"
-                                    placeholder="Discription"
+                                    label="Description"
+                                    placeholder="detail description of car (max length 50)"
                                     multiline
                                     variant="standard"
-                                    name="Discription"
+                                    name="Description"
                                     value={description}
                                     onChange={(e) => setdescription(e.target.value)}
                                     style={{ width: "200%" }}
+                                    inputProps={{ maxLength: 50 }}
                                 />
                             </div>
 
@@ -112,7 +128,7 @@ function Cardetails() {
                     </div>
 
                 </form>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: "15px" }} >
                     <Fab onClick={() => handleAddCar()} color="dark" aria-label="add">
                         <AddIcon />
                     </Fab>

@@ -8,136 +8,198 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
+import LoadingBar from 'react-top-loading-bar'
+import ErrorIcon from '@mui/icons-material/Error';
 // import { getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { Toaster, toast } from 'react-hot-toast';
 
 const CleanerOnboarding = () => {
     const location = useLocation();
-    console.log(location.state);
+    // console.log(location.state);
     const [imgurl, setimgurl] = useState(location?.state?.imgurl);
     const [Name, setName] = useState(location?.state?.name);
-    const [BirthDate, setBirthDate] = useState(location?.state?.dob);
+    const [BirthDate, setBirthDate] = useState(location?.state?.DOB);
     const [email, setemail] = useState(location?.state?.email);
-    const [Curraddress, setCurraddress] = useState(location?.state?.currAddress);
-    const [permanentAddress, setpermanentAddress] = useState(location?.state?.permanentAddress);
+    const [Curraddress, setCurraddress] = useState(location?.state?.currAdd);
+    const [permanentAddress, setpermanentAddress] = useState(location?.state?.permanentAdd);
     const [gender, setgender] = useState(location?.state?.gender);
-    const [phoneNumber, setphoneNumber] = useState(location?.state?.phoneNumber);
+    const [phoneNumber, setphoneNumber] = useState(location?.state?.phone);
     const [adhaar, setadhaar] = useState(location?.state?.adhaar);
     const [error, seterror] = useState(null);
+    const [progress, setprogress] = useState(0);
+    const [imageData, setimageData] = useState(null);
+    const [adhaarData, setadhaarData] = useState(null);
+    const [password, setpassword] = useState("")
+
+
     const navigate = useNavigate();
 
-    // const handleNavigate = (e) => {
-    //     console.log(e.target.value);
-    // }
+    const handleCapture = async (e, Type) => {
+        if (Type === "image") {
+            setimgurl(e.target.files[e.target.files.length - 1]);
 
-    // const [type, settype] = useState(null)
-    const handleCapture = async (target, Type) => {
-        console.log(target);
-        if (target.files) {
-            const file = target.files[0];
-
-            // const storage = getStorage();
-            // var storagePath = "images/" + file.name;
-            // const storageRef = ref(storage, storagePath);
-            // const uploadTask = uploadBytesResumable(storageRef, file);
-
-            // uploadTask.on('state_changed', (snapshot) => {
-            //     const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            //     console.log("upload is " + prog + '% done');
-            //     // setprogress(prog);
-            //     if (prog === 100) {
-            //         toast.success("Your File has been successfully uploaded");
-            //     }
-            // }, (error) => {
-            //     console.log(error);
-            // }, async () => {
-            //     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadUrl) => {
-            //         console.log("File Available at" + downloadUrl);
-            //         console.log(downloadUrl)
-            //         setimgurl(downloadUrl);
-
-            //     })
-            // })
-            // // console.log(file.name); 
-
-            // const type = typeof (file);
-            // settype(type);
-            const newUrl = URL.createObjectURL(file);
-
-            if (Type === "adhaar") {
-                setadhaar(newUrl);
-                console.log(newUrl)
-            } else {
-                setimgurl(newUrl);
-            }
+        } else {
+            setadhaar(e.target.files[e.target.files.length - 1]);
 
         }
     }
 
     const handleSubmit = async (e) => {
 
-        if (Name === undefined || imgurl === undefined || BirthDate === undefined || email === undefined || Curraddress === undefined || permanentAddress === undefined || gender === undefined || phoneNumber === undefined || adhaar === undefined) {
+        if (Name === undefined || BirthDate === undefined || email === undefined || Curraddress === undefined || permanentAddress === undefined || gender === undefined || phoneNumber === undefined) {
             toast.error("required fields are empty!");
             return;
         }
 
-        e.preventDefault()
-        // console.log("Yes");
-        // console.log(adhaar);
-        await setDoc(doc(db, "cities", `${email}`), {
-            Name: Name,
+        e.preventDefault();
+        setprogress(10);
+        setprogress(20);
+        setprogress(40);
+        setprogress(50);
+        setprogress(70);
+        setprogress(80);
+
+
+        let body = {
             email: email,
+            name: Name,
             DOB: BirthDate,
-            currAddress: Curraddress,
-            permanentAddress: permanentAddress,
-            phoneNumber: phoneNumber,
-            adhaar: adhaar,
-            imgurl: imgurl,
+            currAdd: Curraddress,
+            permanentAdd: permanentAddress,
+            phone: phoneNumber,
             gender: gender,
-            assignedCars:[1,2,3], 
-        });
-        toast.success("Cleaner registered successfully!");
-        navigate("/cleaners")
+            imageUrl: "abc",
+            adhaarUrl: "abc",
+            password:password
+        }
+
+
+
+        const formData = new FormData();
+        formData.append('imageData', imgurl);
+        formData.append('imageName', imgurl.name);
+        formData.append('adhaarData', adhaar);
+        formData.append('adhaarName', adhaar.name);
+        formData.append('cleaner', new Blob([JSON.stringify(body)], { type: 'application/json' }));
+
+        // console.log(body.DOB, typeof(body.DOB));
+
+        if (!location?.state) {
+
+            let response = await fetch("http://localhost:8080/admin/cleaner/add", {
+                method: "POST",
+                body: formData,
+            })
+
+            if (response.ok) {
+
+                toast.success("Cleaner registered successfully!");
+                
+                setprogress(100);
+                navigate("/cleaners")
+            } else {
+                setprogress(100);
+                let res = await response.text();
+                let res2 = JSON.parse(res);
+                // console.log(res2);
+                toast.error(res2.error);
+
+            }
+
+        } else {
+
+            let response = await fetch(`http://localhost:8080/admin/cleaner/update/${email}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+
+            // console.log("Updated response", response); 
+            if (response.ok) {
+                toast.success("Cleaner updated successfully");
+                setprogress(100);
+                navigate("/cleaners")
+            } else {
+                setprogress(100);
+                toast.error("Cleaner not updated please try again after some time!");
+            }
+
+        }
+
     }
 
+
+    // console.log(location?.state?.imageUrl);
+
     function isValidEmail(email) {
-        return /\S+@\S+\.\S+/.test(email);
+
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail.com$/;
+        return emailRegex.test(email);
+    }
+    const isValidPhoneNumber =(phone) => {
+        return phone.length == 10; 
     }
 
     const handleChangeemail = (e) => {
         if (!isValidEmail(e.target.value)) {
-            seterror("invalid email");
+            seterror("invalid detail");
         } else {
             seterror(null);
         }
 
         setemail(e.target.value);
     }
+    const handleChangePhone = (e) => {
+        if(!isValidPhoneNumber(e.target.value)) {
+            seterror("invalid detail"); 
+        } else {
+            seterror(null); 
+        }
+
+        setphoneNumber(e.target.value); 
+    }
 
     return (
-        <section class="vh-100 gradient-custom">
+        <section class="gradient-custom" id='cleanerOnBoarding' >
             <Toaster />
+            <LoadingBar
+                color='#f11946'
+                progress={progress}
+                onLoaderFinished={() => setprogress(0)}
+            />
             <div class="container h-100">
                 <div class="row justify-content-center align-items-center h-100">
                     <div class="col-12 col-lg-9 col-xl-7">
-                        <div class="card shadow-2-strong card-registration" style={{ borderRadius: "15px" }}>
+                        <div class="card shadow-2-strong card-registration" id='card' style={{ borderRadius: "15px" }}>
                             <div class="card-body p-4 p-md-5">
                                 <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
                                 <form>
 
-                                    <div class="row">
-                                        <div class="col-md-6">
+                                    <div class="row ">
+                                        <div class="col-md-6 my-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                                             <div class="form-outline">
                                                 <TextField id="standard-basic" label="Name" variant="standard" value={Name} onChange={(e) => setName(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
+
+
+                                        </div>
+
+                                        <div class="col-md-6 my-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                                            <div class="form-outline">
+                                                <TextField type='password' id="standard-basic" label="Password" variant="standard" value={password} onChange={(e) => setpassword(e.target.value)} sx={{ width: '100%' }} required />
+                                            </div>
+
 
                                         </div>
 
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6 ">
+                                        <div class="col-md-6 my-3">
 
                                             <div class="form-outline ">
                                                 <TextField value={BirthDate} id="standard-basic" label="DOB (dd-mm-yyyy)" variant="standard" type='date' onChange={(e) => setBirthDate(e.target.value)} sx={{ width: '100%' }} required />
@@ -146,10 +208,11 @@ const CleanerOnboarding = () => {
 
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <div class="form-outline">
-                                                {error && <div style={{ color: 'red' }}>{error}</div>}
+                                        <div class="col-md-6 my-3">
+                                            <div class="form-outline" style = {{display:"flex"}} >
+                                                
                                                 <TextField value={email} id="standard-basic" label="email (eg. abc@gmail.com)" disabled={location.state ? true : false} variant="standard" onChange={handleChangeemail} sx={{ width: '100%' }} required />
+                                                {error && <div style={{ color: 'red', display:'flex', flexDirection:'column', justifyContent:'center' }}><ErrorIcon/></div>}
                                             </div>
 
                                         </div>
@@ -157,14 +220,14 @@ const CleanerOnboarding = () => {
 
 
                                     <div class="row">
-                                        <div class="col-md-6 pb-2">
+                                        <div class="col-md-6 pb-2 my-3">
 
                                             <div class="form-outline">
                                                 <TextField value={Curraddress} id="standard-basic" label="Current Address" variant="standard" onChange={(e) => setCurraddress(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
-                                        <div class="col-md-6 pb-2">
+                                        <div class="col-md-6 pb-2 my-3">
 
                                             <div class="form-outline">
                                                 <TextField value={permanentAddress} id="standard-basic" label="Permanent Address" variant="standard" onChange={(e) => setpermanentAddress(e.target.value)} sx={{ width: '100%' }} required />
@@ -176,14 +239,14 @@ const CleanerOnboarding = () => {
 
 
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 my-3">
 
                                             <div class="form-outline">
-                                                <TextField value={phoneNumber} id="standard-basic" label="Phone Number" variant="standard" type='tel' onChange={(e) => setphoneNumber(e.target.value)} sx={{ width: '100%' }} required />
+                                                <TextField value={phoneNumber} id="standard-basic" onChange={handleChangePhone} label="Phone Number" variant="standard" type='tel' sx={{ width: '100%' }} required />
                                             </div>
 
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 my-3">
 
 
                                             <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
@@ -205,42 +268,23 @@ const CleanerOnboarding = () => {
 
 
                                         <div class="row">
-                                            <div class="col-md-6 mt-3">
+                                            <div class="col-md-6 mt-3 my-3">
 
                                                 <div class="form-outline">
-                                                    <input type="file" id="adhaar" onChange={(e) => handleCapture(e.target, "adhaar")} required />
+                                                    <input disabled={location.state ? true : false} type="file" id="adhaar" onChange={(e) => handleCapture(e, "adhaar")} required />
                                                     <label class="form-label" for="adhaar">Adhaar Card Upload</label>
                                                     {location.state && <h6 style={{ color: 'red' }}> adhaar already uploaded </h6>}
                                                 </div>
 
                                             </div>
-                                            <div class="col-md-6 mt-3">
+                                            <div class="col-md-6 mt-3 my-3">
 
-                                                <div class="form-outline">
-                                                    <input type="file" id="image" accept="image/*" onChange={(e) => handleCapture(e.target, "image")} required />
+                                                <div class="form-outline" >
+                                                    <input disabled={location.state ? true : false} type="file" id="image" onChange={(e) => handleCapture(e, "image")} required title='chose file'/>
                                                     <label class="form-label" for="image">Image Upload</label>
                                                     {location.state && <h6 style={{ color: 'red' }}> image already uploaded </h6>}
                                                 </div>
-                                                {/* 
-                                                <Accordion>
-                                                    <AccordionSummary
-                                                        expandIcon={<ExpandMoreIcon />}
-                                                        aria-controls="panel1a-content"
-                                                        id="panel1a-header"
-                                                    >
-                                                        <Typography>Capture/upload photo</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails>
-                                                        <input type="file" id="permanentAddress" onChange={(e) => setimgurl(e.target.value)} />
-                                                        <label>Upload</label>
-                                                    </AccordionDetails>
-                                                    
-                                                    <AccordionDetails>
-                                                        <input type="file" name="image" accept="image/*" id="file-input" capture="user" onChange={(e) => handleCapture(e.target)} />
-                                                        <label for='file-input'>Camera</label>
 
-                                                    </AccordionDetails>
-                                                </Accordion> */}
 
                                             </div>
 

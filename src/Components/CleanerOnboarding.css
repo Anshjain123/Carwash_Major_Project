@@ -42,3 +42,21 @@
 }
 
 input[type='date']:in-range::-webkit-datetime-edit-year-field,input[type='date']:in-range::-webkit-datetime-edit-month-field,input[type='date']:in-range::-webkit-datetime-edit-day-field,input[type='date']:in-range::-webkit-datetime-edit-text{  color: transparent;}
+
+#cleanerOnBoarding {
+  background: linear-gradient(
+      to right,
+      rgba(31, 28, 88, 0.9) 10%,
+      rgba(31, 28, 88, 0.7) 50%,
+      rgba(31, 28, 88, 0.1) 100%
+    ),
+      url("https://www.shutterstock.com/image-photo/summer-car-wash-cleaning-high-600nw-2292007309.jpg");
+  padding: 10px;
+  min-height: 90vh;
+  width: 100vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex ;
+  justify-content: center;
+  align-items: center;
+}
