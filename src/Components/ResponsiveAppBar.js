@@ -61,7 +61,7 @@ function ResponsiveAppBar() {
                         <a href="#">Assign Cleaners</a>
                     </li>
                     <li onClick={() => navigate("/getImagesDayWise")}>
-                        <a href="#">Get images day wise</a>
+                        <a href="#">images</a>
                     </li>
                 </ul>
             </nav>

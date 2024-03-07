@@ -3,6 +3,8 @@ import "./GetImagesDayWise.css";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Toaster, toast } from 'react-hot-toast';
+import ShowImage from './ShowImage';
+
 
 const GetImagesDayWise = () => {
 
@@ -14,38 +16,40 @@ const GetImagesDayWise = () => {
 
     const handleSubmit = async () => {
 
-        if(carNumber == "" || date == "") {
-            toast.error("fields are empty!"); 
-            return; 
-        } 
-        const data = {
-            carNumber:carNumber, 
-            date:date
+        if (carNumber == "" || date == "") {
+            toast.error("fields are empty!");
+            return;
         }
+        const data = {
+            carNumber: carNumber,
+            date: date
+        }
+
+        
         let response = await fetch("http://localhost:8080/admin/getUrlsByDateAndCarNumber", {
             method: "POST",
-            headers:{
-                'Content-Type':'application/json'
-            }, 
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(data),
 
         })
-        
+
         try {
             let res = await response.json();
-            console.log(res); 
-            setallUrls(res); 
-            toast.success("fetched images succefully!"); 
+            console.log(res);
+            setallUrls(res);
+            toast.success("fetched images succefully!");
         } catch (error) {
-            console.log(error); 
-            toast.error("cannot fetched images! may be images are not uploaded for this day"); 
+            console.log(error);
+            toast.error("cannot fetched images! may be images are not uploaded for this day");
         }
     }
 
     return (
 
         <div className='getimagesdaywise'>
-            <Toaster/>
+            <Toaster />
             <div className='container'>
 
                 <div className='query'>
@@ -63,7 +67,9 @@ const GetImagesDayWise = () => {
                     </div>
                 </div>
                 <div className='images'>
-
+                    {allUrls.length > 0 && allUrls.map((url, index) => {
+                        return <ShowImage className="image" url={url}/>
+                    })}
                 </div>
             </div>
         </div>
