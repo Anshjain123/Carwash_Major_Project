@@ -24,6 +24,16 @@ function Cardetails() {
     const navigate = useNavigate();
     const handleNext = () => {
 
+
+        if(carNumber.length < 10) {
+            toast.error("car number should be of atleast 10 length");
+            return;
+        }
+        let state = carNumber.substring(0, 3)
+        if(stateCodes.indexOf(state) == -1) {
+            toast.error("please enter valid state car number");
+            return;
+        }
         if (carModel === undefined || carNumber === undefined || description === undefined) {
             toast.error("required fields are empty!");
             return;
@@ -53,9 +63,48 @@ function Cardetails() {
     }
 
 
+    let stateCodes = [
+        'AP',
+        'AR',
+        'AN',
+        'CG',
+        'DN',
+        'GA',
+        'HP',
+        'JK',
+        'KL',
+        'MP',
+        'ML',
+        'LD',
+        'NL',
+        'OD',
+        'SK',
+        'TN',
+        'UK',
+        'UP',
+        'TR',
+        'RJ',
+        'PB',
+        'PY',
+        'DL',
+        'MZ',
+        'MN',
+        'MH',
+        'KA',
+        'JH',
+        'HR',
+        'DD',
+        'GJ',
+        'CH',
+        'BR',
+        'AS'
+
+    ]
+
 
     const handleAddCar = () => {
 
+        
 
         if (!(carModel === undefined || carNumber === undefined || description === undefined)) {
             sethandleAddCarFlag(false);
