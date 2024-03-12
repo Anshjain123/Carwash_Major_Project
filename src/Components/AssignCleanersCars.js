@@ -28,6 +28,7 @@ const AssignCleanersCars = () => {
     const [description, setdescription] = useState("");
     const [assigned, setassigned] = useState(false);
     const [id, setid] = useState("");
+    const [assignedCleaners, setassignedCleaners] = useState([]);
 
 
 
@@ -83,7 +84,31 @@ const AssignCleanersCars = () => {
 
         }
 
+        const getClientCarsAssignedCleaners = async () => {
+
+            try {
+
+                let res = await fetch("http://localhost:8080/admin/assignCars/getAllAssignedCleaners", {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+
+                try {
+                    let response = await res.json();
+                    console.log("printing assigned cleaners", response);
+                    setassignedCleaners(response); 
+                } catch (error) {
+                    console.log(error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
         getClientCars();
+        getClientCarsAssignedCleaners(); 
     }, [])
 
 
@@ -172,6 +197,7 @@ const AssignCleanersCars = () => {
                             <TableCell align="right">carModel</TableCell>
                             <TableCell align="right">description</TableCell>
                             <TableCell align="right">Assigned</TableCell>
+                            <TableCell align="right">Assigned Cleaner</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -186,6 +212,7 @@ const AssignCleanersCars = () => {
                                 <TableCell align="right">{row.carModel}</TableCell>
                                 <TableCell align="right">{row.description}</TableCell>
                                 <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
+                                <TableCell align="right">{row.assigned ? assignedCleaners[row.carNumber] : "NA"}</TableCell>
 
                                 {/* <TableCell align="right">NO</TableCell> */}
                             </TableRow>
