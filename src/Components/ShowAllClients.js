@@ -92,6 +92,8 @@ const ShowAllClients = () => {
 
     const handleUpdate = async (row) => {
 
+        console.log("printing row");
+        console.log(row);
         let allClientCars = [
             {
                 carModel: row.carModel,
@@ -106,9 +108,10 @@ const ShowAllClients = () => {
             age: row.age,
             gender: row.gender,
             address: row.address,
-            phone: row.phone, 
-            plan: row.plan, 
-            allClientCars: allClientCars
+            phone: row.phone,
+            plan: row.plan,
+            allClientCars: allClientCars,
+            password: row.password
         }
         navigate("/registerClients", { state: body });
     }
@@ -140,6 +143,7 @@ const ShowAllClients = () => {
                             <TableCell align="right">Plan</TableCell>
                             <TableCell align="right">Delete</TableCell>
                             <TableCell align="right">Update</TableCell>
+                            <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -163,6 +167,7 @@ const ShowAllClients = () => {
                                 <TableCell align="right">{row.plan} </TableCell>
                                 <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
                                 <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
+                                <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
                             </TableRow>
                         ))
                         }

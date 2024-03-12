@@ -4,15 +4,16 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Toaster, toast } from 'react-hot-toast';
 import ShowImage from './ShowImage';
+import { useLocation } from 'react-router';
 
 
 const GetImagesDayWise = () => {
 
+    const location = useLocation();
 
-    const [carNumber, setcarNumber] = useState("");
+    const [carNumber, setcarNumber] = useState(location?.state?.carNumber);
     const [date, setdate] = useState("");
     const [allUrls, setallUrls] = useState([]);
-
 
     const handleSubmit = async () => {
 
