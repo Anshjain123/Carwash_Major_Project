@@ -22,46 +22,6 @@ function Cardetails() {
     const [allClientCars, setallClientCars] = useState([]);
 
     const navigate = useNavigate();
-    const handleNext = () => {
-
-
-        if(carNumber.length < 10) {
-            toast.error("car number should be of atleast 10 length");
-            return;
-        }
-        let state = carNumber.substring(0, 3)
-        if(stateCodes.indexOf(state) == -1) {
-            toast.error("please enter valid state car number");
-            return;
-        }
-        if (carModel === undefined || carNumber === undefined || description === undefined) {
-            toast.error("required fields are empty!");
-            return;
-        }
-
-        const newObj = {
-            carModel: carModel,
-            carNumber: carNumber,
-            description: description,
-            assigned: false
-        }
-
-        let arr = allClientCars;
-        arr.push(newObj);
-
-        setallClientCars([...allClientCars, newObj]);
-        // console.log("Before going to next we checking if allClientCars are set or not", allClientCars, "arr->", arr);
-
-        let body;
-        let flag;
-
-        location.state.body.allClientCars = allClientCars;
-        body = location.state.body;
-        flag = location.state.flag;
-
-        navigate("/plans", { state: { body, flag } });
-    }
-
 
     let stateCodes = [
         'AP',
@@ -100,6 +60,50 @@ function Cardetails() {
         'AS'
 
     ]
+
+    const handleNext = () => {
+
+        if(carNumber.length < 10) {
+            toast.error("car number should be of atleast 10 length");
+            return;
+        }
+        
+        let state = carNumber.substring(0, 2)
+        
+        if(stateCodes.indexOf(state) == -1) {
+            toast.error("please enter valid state car number");
+            return;
+        }
+        if (carModel === undefined || carNumber === undefined || description === undefined) {
+            toast.error("required fields are empty!");
+            return;
+        }
+
+        const newObj = {
+            carModel: carModel,
+            carNumber: carNumber,
+            description: description,
+            assigned: false
+        }
+
+        let arr = allClientCars;
+        arr.push(newObj);
+
+        setallClientCars([...allClientCars, newObj]);
+        // console.log("Before going to next we checking if allClientCars are set or not", allClientCars, "arr->", arr);
+
+        let body;
+        let flag;
+
+        location.state.body.allClientCars = allClientCars;
+        body = location.state.body;
+        flag = location.state.flag;
+
+        navigate("/plans", { state: { body, flag } });
+    }
+
+
+    
 
 
     const handleAddCar = () => {

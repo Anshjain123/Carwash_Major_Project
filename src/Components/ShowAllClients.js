@@ -121,59 +121,62 @@ const ShowAllClients = () => {
     }, [count])
     return (
 
-        <div className='showAllClients' style={{ padding: '50px' }}>
-            <div style={{ paddingBottom: '15px', paddingTop: '20px' }}>
+        <div className='showAllClients'>
+            <div className='client_add_icon' >
                 <Fab onClick={() => navigate("/registerClients")} color="dark" aria-label="add">
                     <AddIcon />
                 </Fab>
             </div>
             <Toaster />
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">PhoneNumber</TableCell>
-                            <TableCell align="right">Gender</TableCell>
-                            <TableCell align="right">description</TableCell>
-                            <TableCell align="right">address</TableCell>
-                            <TableCell align="right">carModel</TableCell>
-                            <TableCell align="right">carNumber</TableCell>
-                            <TableCell align="right">age</TableCell>
-                            <TableCell align="right">Plan</TableCell>
-                            <TableCell align="right">Delete</TableCell>
-                            <TableCell align="right">Update</TableCell>
-                            <TableCell align="right"></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {clients && clients.map((row, index) => (
-
-                            <TableRow
-                                key={index}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-
-
-
-                                <TableCell component="th" scope="row">{row.name}</TableCell>
-                                <TableCell align="right">{row.phone}  </TableCell>
-                                <TableCell align="right">{row.gender} </TableCell>
-                                <TableCell align="right">{row.description} </TableCell>
-                                <TableCell align="right">{row.address} </TableCell>
-                                <TableCell align="right">{row.carModel} </TableCell>
-                                <TableCell align="right">{row.carNumber} </TableCell>
-                                <TableCell align="right">{row.age} </TableCell>
-                                <TableCell align="right">{row.plan} </TableCell>
-                                <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
-                                <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
-                                <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
+            <div className='table_clients'>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell align="right">PhoneNumber</TableCell>
+                                <TableCell align="right">Gender</TableCell>
+                                <TableCell align="right">description</TableCell>
+                                <TableCell align="right">address</TableCell>
+                                <TableCell align="right">carModel</TableCell>
+                                <TableCell align="right">carNumber</TableCell>
+                                <TableCell align="right">age</TableCell>
+                                <TableCell align="right">Plan</TableCell>
+                                <TableCell align="right">Delete</TableCell>
+                                <TableCell align="right">Update</TableCell>
+                                <TableCell align="right"></TableCell>
                             </TableRow>
-                        ))
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {clients && clients.map((row, index) => (
+
+                                <TableRow
+                                    key={index}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+
+
+
+                                    <TableCell component="th" scope="row">{row.name}</TableCell>
+                                    <TableCell align="right">{row.phone}  </TableCell>
+                                    <TableCell align="right">{row.gender} </TableCell>
+                                    <TableCell align="right">{row.description} </TableCell>
+                                    <TableCell align="right">{row.address} </TableCell>
+                                    <TableCell align="right">{row.carModel} </TableCell>
+                                    <TableCell align="right">{row.carNumber} </TableCell>
+                                    <TableCell align="right">{row.age} </TableCell>
+                                    <TableCell align="right">{row.plan} </TableCell>
+                                    <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
+                                    <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
+                                    <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
+                                </TableRow>
+                            ))
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+
         </div>
     )
 }

@@ -12,3 +12,26 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+
+@media (max-width: 767px) {
+  /* Add your mobile specific styles here */
+  .table_clients {
+    /* display: flex; */
+    width: 95vw;
+  }
+  .client_add_icon {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Add your desktop/laptop specific styles here */
+  
+  .client_add_icon {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+

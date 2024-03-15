@@ -47,11 +47,11 @@ nav ul li {
 }
 
 nav ul li a {
-  padding: 18px;
+  
   font-family: "Open Sans";
   text-transform: uppercase;
   color: rgba(0, 35, 122, 0.5);
-  font-size: 18px;
+  /* font-size: 18px; */
   text-decoration: none;
   display: block;
 }
@@ -61,4 +61,23 @@ nav ul li a:hover {
     inset 0 0 1px rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.1);
   color: rgba(0, 35, 122, 0.7);
+}
+
+
+@media (max-width: 767px) {
+  /* Add your mobile specific styles here */
+  nav ul li a {
+    /* display: flex; */
+    font-size: 10px;
+    padding: 10px;
+    
+  }
+}
+
+@media (min-width: 768px) {
+  /* Add your desktop/laptop specific styles here */
+  nav ul li a {
+    font-size: 18px;
+    padding: 18px;
+  }
 }

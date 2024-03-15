@@ -18,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import { useNavigate } from 'react-router';
 
+
 const ShowAllCleaners = () => {
 
     const [allCleaners, setallCleaners] = useState(null);
@@ -74,7 +75,7 @@ const ShowAllCleaners = () => {
     return (
 
         <div className='showAllCleaners'>
-            <div>
+            <div className='table_cleaners'>
                 <div style={{ paddingBottom: '15px', paddingTop: '20px' }}>
                     <Fab onClick={() => navigate("/register")} color="dark" aria-label="add">
                         <AddIcon />
@@ -82,7 +83,7 @@ const ShowAllCleaners = () => {
                 </div>
                 <Toaster />
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>

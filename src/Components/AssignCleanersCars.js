@@ -187,7 +187,7 @@ const AssignCleanersCars = () => {
 
     // console.log("Printing all cars-> ", allClientCars);
     return (
-        <div className='assignCleanerCars' style={{ padding: '80px' }} >
+        <div className='assignCleanerCars' >
             <Toaster />
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
