@@ -5,21 +5,27 @@ import { Toaster, toast } from "react-hot-toast";
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import "./CarDetails.css"
-
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import LoadingBar from 'react-top-loading-bar'
 
 function Cardetails() {
 
 
 
     const location = useLocation();
+    console.log("printing location in cardetails");
     console.log(location.state.body);
     const [carModel, setCarModel] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carModel : undefined));
     const [carNumber, setCarNumber] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carNumber : undefined));
     const [description, setdescription] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].description : undefined));
     const [handleAddCarFlag, sethandleAddCarFlag] = useState((location.state.flag == "update" ? true : false));
-
-
+    const [plan, setplan] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].plan : undefined);
+    const [progress, setprogress] = useState(0);
     const [allClientCars, setallClientCars] = useState([]);
+    const [planValidity, setplanValidity] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].planValidity : undefined);
 
     const navigate = useNavigate();
 
@@ -61,16 +67,17 @@ function Cardetails() {
 
     ]
 
-    const handleNext = () => {
+    const handleSubmit = async (e) => {
 
-        if(carNumber.length < 10) {
+
+        if (carNumber.length < 10) {
             toast.error("car number should be of atleast 10 length");
             return;
         }
-        
+
         let state = carNumber.substring(0, 2)
-        
-        if(stateCodes.indexOf(state) == -1) {
+
+        if (stateCodes.indexOf(state) == -1) {
             toast.error("please enter valid state car number");
             return;
         }
@@ -78,11 +85,17 @@ function Cardetails() {
             toast.error("required fields are empty!");
             return;
         }
+        if (plan == undefined) {
+            toast.error("please chose a plan!");
+            return;
+        }
 
         const newObj = {
             carModel: carModel,
             carNumber: carNumber,
             description: description,
+            plan: plan,
+            planValidity: planValidity,
             assigned: false
         }
 
@@ -99,23 +112,69 @@ function Cardetails() {
         body = location.state.body;
         flag = location.state.flag;
 
-        navigate("/plans", { state: { body, flag } });
+
+
+        setprogress(10);
+        setprogress(20);
+        setprogress(40);
+        setprogress(50);
+        setprogress(70);
+        setprogress(90);
+
+        let response;
+
+        if (location.state.flag == "update") {
+            console.log("printing body in update", body);
+            response = await fetch("http://localhost:8080/admin/client/update", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+
+        } else {
+            response = await fetch("http://localhost:8080/admin/client/add", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+        }
+
+
+
+        // console.log("Printing added clients response", response);
+
+        setprogress(100);
+
+        if (response.ok) {
+            toast.success("Client is successfully added!");
+            navigate("/clients");
+        } else {
+            toast.error("Client with same phone number already exists!");
+        }
+
+        // navigate("/plans", { state: { body, flag } });
     }
 
 
-    
+
 
 
     const handleAddCar = () => {
 
-        
 
-        if (!(carModel === undefined || carNumber === undefined || description === undefined)) {
-            sethandleAddCarFlag(false);
+
+
+        if (!(carModel === undefined || carNumber === undefined || description === undefined) && handleAddCarFlag === true) {
             const newObj = {
                 carModel: carModel,
                 carNumber: carNumber,
                 description: description,
+                plan: plan,
+                planValidity: planValidity,
                 assigned: false
             }
 
@@ -126,12 +185,29 @@ function Cardetails() {
         setCarModel("");
         setCarNumber("");
         setdescription("");
+        setplan("");
+        sethandleAddCarFlag(false);
+        setplanValidity("");
+
     }
     // console.log(handleAddCarFlag, carNumber);
+
+    const handleChangePlanValidity =(e) => {
+        // let currDate = new Date(e.target.value).toLocaleDateString("en-GB");
+        setplanValidity(e.target.value); 
+        // console.log(planValidity); 
+    }
+
+    console.log(planValidity)
 
     return (
         <div className="carDetails" >
             <Toaster />
+            <LoadingBar
+                color='#f11946'
+                progress={progress}
+                onLoaderFinished={() => setprogress(0)}
+            />
             <div className="container"  >
 
                 <form>
@@ -174,8 +250,33 @@ function Cardetails() {
                                 />
                             </div>
 
+                            <div className="field">
+                                <div style={{ flex: 1 }} >
+                                    <FormControl variant="standard" sx={{ width:"95%", }}>
+                                        <InputLabel id="plan">Plan</InputLabel>
+                                        <Select
+                                            labelId="plan"
+                                            id="plan"
+                                            value={plan}
+                                            onChange={(e) => setplan(e.target.value)}
+                                            label="Plans"
+                                        >
+                                            <MenuItem value="plan1">Plan1</MenuItem>
+                                            <MenuItem value="plan2">Plan2</MenuItem>
+                                            <MenuItem value="plan3">Plan3</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <TextField value={planValidity} id="standard-basic" label="plan validity (dd-mm-yyyy)" variant="standard" type='date' onChange={(e) => handleChangePlanValidity(e)} sx={{ width: '100%' }} required />
 
-                            <Button variant="contained" style={{ marginTop: "4ch" }} onClick={() => handleNext()}>Next</Button>
+                                </div>
+
+                            </div>
+
+
+                            <Button variant="contained" style={{ marginTop: "4ch" }} onClick={() => handleSubmit()}>Submit</Button>
+
 
                         </div>
                     </div>

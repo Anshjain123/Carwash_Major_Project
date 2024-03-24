@@ -5,7 +5,12 @@ import Button from '@mui/material/Button';
 import { Toaster, toast } from 'react-hot-toast';
 import ShowImage from './ShowImage';
 import { useLocation } from 'react-router';
-
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+// import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 const GetImagesDayWise = () => {
 
@@ -26,7 +31,7 @@ const GetImagesDayWise = () => {
             date: date
         }
 
-        
+
         let response = await fetch("http://localhost:8080/admin/getUrlsByDateAndCarNumber", {
             method: "POST",
             headers: {
@@ -68,9 +73,21 @@ const GetImagesDayWise = () => {
                     </div>
                 </div>
                 <div className='images'>
+                    
                     {allUrls.length > 0 && allUrls.map((url, index) => {
-                        return <ShowImage className="image" url={url}/>
+                        return <ShowImage className="image" url={url} />
                     })}
+
+                    {/* <img src='http://192.168.1.23:8080/getMedia/image9ML12345670' /> */}
+{/* 
+                    
+
+                    {/* 
+
+
+                    {allUrls.length > 0 && allUrls.length > 5 && allUrls.map((url, index) => {
+                        return <ShowImage className="image" url={url} />
+                    })} */}
                 </div>
             </div>
         </div>

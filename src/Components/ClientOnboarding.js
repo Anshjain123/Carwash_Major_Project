@@ -17,16 +17,20 @@ import Tooltip from '@mui/material/Tooltip';
 function ClientOnboarding() {
 
     // const [Data, setData] = useState({ fullName: "", age: "", address: "", gender: "male" });
+    console.log("printing location in client on boarding"); 
     const navigate = useNavigate();
     const location = useLocation();
+    console.log(location.state); 
     const [name, setname] = useState(location?.state?.name);
     const [age, setage] = useState(location?.state?.age);
     const [address, setaddress] = useState(location?.state?.address);
     const [gender, setgender] = useState(location?.state?.gender)
     const [phone, setphone] = useState(location?.state?.phone);
+    const [email, setemail] = useState(location?.state?.email);
     const [progress, setprogress] = useState(0);
     const [password, setpassword] = useState(location?.state?.password);
-    const [error, seterror] = useState(false); 
+    const [error, seterror] = useState(false);
+    const [emailError, setemailError] = useState(false);
     // const ChangeData = (e) => {
     //     const { name, value } = e.target;
     //     setData((prevData) => ({
@@ -72,7 +76,8 @@ function ClientOnboarding() {
                 gender: gender,
                 address: address,
                 phone: phone,
-                password: password
+                password: password,
+                email: email,
             }
         }
 
@@ -83,27 +88,40 @@ function ClientOnboarding() {
 
     }
 
-    const isEveryDigit =(phone) => {
+    const isEveryDigit = (phone) => {
 
-        for(let i = 0; i < phone.length; i++) {
-            if(!(phone[i] >= '0' && phone[i] <= '9')) {
+        for (let i = 0; i < phone.length; i++) {
+            if (!(phone[i] >= '0' && phone[i] <= '9')) {
                 return false;
             }
         }
         return true;
     }
 
-    const isValidPhone =(phone) => {
-        return (phone.length == 10 && isEveryDigit(phone)); 
+    const isValidPhone = (phone) => {
+        return (phone.length == 10 && isEveryDigit(phone));
+    }
+    const isValidEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail.com$/;
+        return emailRegex.test(email);
     }
 
-    const handleChangePhone =(e) => {
-        if(isValidPhone(e.target.value)) {
-            seterror(false); 
+    const handleChangePhone = (e) => {
+        if (isValidPhone(e.target.value)) {
+            seterror(false);
         } else {
-            seterror(true); 
+            seterror(true);
         }
-        setphone(e.target.value);  
+        setphone(e.target.value);
+    }
+
+    const handleChangeEmail = (e) => {
+        if (isValidEmail(e.target.value)) {
+            setemailError(false);
+        } else {
+            setemailError(true);
+        }
+        setemail(e.target.value);
     }
 
     return (
@@ -170,13 +188,33 @@ function ClientOnboarding() {
                                     sx={{ width: "100%" }}
                                     required
                                 />
-                                {error && <div style={{ color: 'red', display:'flex', flexDirection:'column', justifyContent:'center' }}>
-                                    
+                                {error && <div style={{ color: 'red', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+
                                     <Tooltip title="phone number must of length 10" placement="top">
-                                        <ErrorIcon/>
+                                        <ErrorIcon />
                                     </Tooltip>
-                                    
-                                    </div>}
+
+                                </div>}
+                            </div>
+                            <div className="field">
+                                <TextField
+                                    id="standard-textarea"
+                                    label="Email"
+                                    placeholder="Enter your email (e.g. abc@gmail.com)"
+                                    variant="standard"
+                                    name="email"
+                                    value={email}
+                                    onChange={handleChangeEmail}
+                                    sx={{ width: "100%" }}
+                                    required
+                                />
+                                {emailError && <div style={{ color: 'red', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+
+                                    <Tooltip title="please enter valid email address" placement="top">
+                                        <ErrorIcon />
+                                    </Tooltip>
+
+                                </div>}
                             </div>
 
                             <div className="field">

@@ -39,10 +39,21 @@
 @media (min-width: 768px) {
   /* Add your desktop/laptop specific styles here */
   .images {
+    /* overflow-x: scroll; */
     display: flex;
-    width: 100%;
+    width: 90vw;
+    flex: 1;
     justify-content: space-between;
     padding: 10px;
     justify-content: center;
+    max-height: 500px;
+    
+    /* object-fit: contain; */
+  }
+ 
+  
+  .image {
+    width: 100%;
+    height: auto;
   }
 }

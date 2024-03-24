@@ -44,7 +44,8 @@ const ShowAllClients = () => {
                 // console.log(response); 
                 try {
                     let res = await response.json();
-                    // console.log(res);
+                    console.log("printing response in showallclients");
+                    console.log(res);
                     // setclients(res);
 
                     let arr = [];
@@ -56,7 +57,11 @@ const ShowAllClients = () => {
                         let newObj = {}
                         for (let j = 0; j < carsArr.length; j++) {
                             let car = carsArr[j];
+                            
+                            let newDate = new Date(car.planValidity);
+                            let formattedDate = newDate.toLocaleDateString("en-GB", {day: '2-digit', month: '2-digit', year: 'numeric'}); 
 
+                            car.planValidity = formattedDate; 
                             const concatenatedObj = { ...car, ...obj };
                             arr.push(concatenatedObj);
                         }
@@ -99,6 +104,8 @@ const ShowAllClients = () => {
                 carModel: row.carModel,
                 carNumber: row.carNumber,
                 description: row.description,
+                plan:row.plan, 
+                planValidity:row.planValidity, 
                 assigned: row.assigned
             }
         ]
@@ -109,9 +116,9 @@ const ShowAllClients = () => {
             gender: row.gender,
             address: row.address,
             phone: row.phone,
-            plan: row.plan,
             allClientCars: allClientCars,
-            password: row.password
+            password: row.password,
+            email:row.email
         }
         navigate("/registerClients", { state: body });
     }
@@ -135,6 +142,7 @@ const ShowAllClients = () => {
                             <TableRow>
                                 <TableCell>Name</TableCell>
                                 <TableCell align="right">PhoneNumber</TableCell>
+                                <TableCell align="right">Email</TableCell>
                                 <TableCell align="right">Gender</TableCell>
                                 <TableCell align="right">description</TableCell>
                                 <TableCell align="right">address</TableCell>
@@ -142,6 +150,7 @@ const ShowAllClients = () => {
                                 <TableCell align="right">carNumber</TableCell>
                                 <TableCell align="right">age</TableCell>
                                 <TableCell align="right">Plan</TableCell>
+                                <TableCell align="right">Plan Validity</TableCell>
                                 <TableCell align="right">Delete</TableCell>
                                 <TableCell align="right">Update</TableCell>
                                 <TableCell align="right"></TableCell>
@@ -159,6 +168,7 @@ const ShowAllClients = () => {
 
                                     <TableCell component="th" scope="row">{row.name}</TableCell>
                                     <TableCell align="right">{row.phone}  </TableCell>
+                                    <TableCell align="right">{row.email}  </TableCell>
                                     <TableCell align="right">{row.gender} </TableCell>
                                     <TableCell align="right">{row.description} </TableCell>
                                     <TableCell align="right">{row.address} </TableCell>
@@ -166,9 +176,11 @@ const ShowAllClients = () => {
                                     <TableCell align="right">{row.carNumber} </TableCell>
                                     <TableCell align="right">{row.age} </TableCell>
                                     <TableCell align="right">{row.plan} </TableCell>
+                                    <TableCell align="right">{row.planValidity} </TableCell>
                                     <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
                                     <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
                                     <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
+                                    <TableCell align="right"><Button variant="contained" >Notify</Button></TableCell>
                                 </TableRow>
                             ))
                             }

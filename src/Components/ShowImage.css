@@ -1,4 +1,11 @@
-.image_show{
-    max-width: 350px;
+.showImage{
+    width: 350px;
+    height: 350px;
     padding: 10px;
+    /* object-fit: contain; */
+}
+.image_show{
+    width: 150px;
+    height: 150px; 
+    /* object-fit: contain; */
 }
