@@ -57,11 +57,11 @@ const ShowAllClients = () => {
                         let newObj = {}
                         for (let j = 0; j < carsArr.length; j++) {
                             let car = carsArr[j];
-                            
-                            let newDate = new Date(car.planValidity);
-                            let formattedDate = newDate.toLocaleDateString("en-GB", {day: '2-digit', month: '2-digit', year: 'numeric'}); 
 
-                            car.planValidity = formattedDate; 
+                            let newDate = new Date(car.planValidity);
+                            let formattedDate = newDate.toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                            car.planValidity = formattedDate;
                             const concatenatedObj = { ...car, ...obj };
                             arr.push(concatenatedObj);
                         }
@@ -104,8 +104,8 @@ const ShowAllClients = () => {
                 carModel: row.carModel,
                 carNumber: row.carNumber,
                 description: row.description,
-                plan:row.plan, 
-                planValidity:row.planValidity, 
+                plan: row.plan,
+                planValidity: row.planValidity,
                 assigned: row.assigned
             }
         ]
@@ -118,9 +118,29 @@ const ShowAllClients = () => {
             phone: row.phone,
             allClientCars: allClientCars,
             password: row.password,
-            email:row.email
+            email: row.email
         }
         navigate("/registerClients", { state: body });
+    }
+
+
+    const handleNotify = async (carNumber) => {
+        let res = await fetch(`http://localhost:8080/admin/client/notify`, {
+            method: "POST",
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify({ carNumber: carNumber })  
+        })
+        // let response = await res.json(); 
+        // console.log(response); 
+        // console.log(res); 
+
+        if(res.ok) {
+            toast.success("notification sent to user successfully!"); 
+        } else {
+            toast.error("notification can't be sent please try again later!"); 
+        }
     }
 
     useEffect(() => {
@@ -180,7 +200,7 @@ const ShowAllClients = () => {
                                     <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
                                     <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
                                     <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
-                                    <TableCell align="right"><Button variant="contained" >Notify</Button></TableCell>
+                                    <TableCell align="right"><Button variant="contained" onClick={() => handleNotify(row.carNumber)} >Notify</Button></TableCell>
                                 </TableRow>
                             ))
                             }
