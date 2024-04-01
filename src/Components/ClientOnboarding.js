@@ -226,6 +226,7 @@ function ClientOnboarding() {
                                     name="Password"
                                     type='password'
                                     value={password}
+                                    disabled={location.state ? true : false}
                                     onChange={(e) => setpassword(e.target.value)}
                                     sx={{ width: "100%" }}
                                     required

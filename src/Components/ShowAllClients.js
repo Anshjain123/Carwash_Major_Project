@@ -99,13 +99,21 @@ const ShowAllClients = () => {
 
         console.log("printing row");
         console.log(row);
+
+        // let date = "";
+        // date = 
+
+        const inputDate = row.planValidity;
+        const parts = inputDate.split('/');
+        const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
         let allClientCars = [
             {
                 carModel: row.carModel,
                 carNumber: row.carNumber,
                 description: row.description,
                 plan: row.plan,
-                planValidity: row.planValidity,
+                planValidity: formattedDate,
                 assigned: row.assigned
             }
         ]
@@ -119,6 +127,7 @@ const ShowAllClients = () => {
             allClientCars: allClientCars,
             password: row.password,
             email: row.email
+
         }
         navigate("/registerClients", { state: body });
     }
@@ -130,16 +139,16 @@ const ShowAllClients = () => {
             headers: {
                 'Content-Type': "application/json"
             },
-            body: JSON.stringify({ carNumber: carNumber })  
+            body: JSON.stringify({ carNumber: carNumber })
         })
         // let response = await res.json(); 
         // console.log(response); 
         // console.log(res); 
 
-        if(res.ok) {
-            toast.success("notification sent to user successfully!"); 
+        if (res.ok) {
+            toast.success("notification sent to user successfully!");
         } else {
-            toast.error("notification can't be sent please try again later!"); 
+            toast.error("notification can't be sent please try again later!");
         }
     }
 

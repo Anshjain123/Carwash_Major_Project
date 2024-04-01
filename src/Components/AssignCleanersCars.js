@@ -174,15 +174,25 @@ const AssignCleanersCars = () => {
 
     const handleUnAssign = async (carNumber) => {
 
-        let res = await fetch("http://localhost:8080/admin/assignCars/unassign", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ carNumber: carNumber })
-        })
 
-        console.log(res); 
+        try {
+            
+            let res = await fetch("http://localhost:8080/admin/assignCars/unassign", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ carNumber: carNumber })
+            })
+    
+            if(res.ok) {
+                toast.success("Successfully unassigned"); 
+            }
+            
+            console.log(res); 
+        } catch (error) {
+            console.log(error); 
+        }
     }
 
     // console.log("Printing all cars-> ", allClientCars);
@@ -211,7 +221,7 @@ const AssignCleanersCars = () => {
                                 </TableCell>
                                 <TableCell align="right">{row.carModel}</TableCell>
                                 <TableCell align="right">{row.description}</TableCell>
-                                <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
+                                <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green', cursor:'pointer' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
                                 <TableCell align="right">{row.assigned ? assignedCleaners[row.carNumber] : "NA"}</TableCell>
 
                                 {/* <TableCell align="right">NO</TableCell> */}

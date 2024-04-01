@@ -11,20 +11,21 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import LoadingBar from 'react-top-loading-bar'
 
+
 function Cardetails() {
 
 
 
     const location = useLocation();
-    console.log("printing location in cardetails");
-    console.log(location.state.body);
+    // console.log("printing location in cardetails");
+    // console.log(location.state.body);
     const [carModel, setCarModel] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carModel : undefined));
     const [carNumber, setCarNumber] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].carNumber : undefined));
     const [description, setdescription] = useState((location.state.flag == "update" ? location.state.body.allClientCars[0].description : undefined));
     const [handleAddCarFlag, sethandleAddCarFlag] = useState((location.state.flag == "update" ? true : false));
     const [plan, setplan] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].plan : undefined);
     const [progress, setprogress] = useState(0);
-    const [allClientCars, setallClientCars] = useState([]);
+    const [allClientCars, setallClientCars] = useState(location.state.flag == "update" ? location.state.body.allClientCars : []);
     const [planValidity, setplanValidity] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].planValidity : undefined);
 
     const navigate = useNavigate();
@@ -69,6 +70,7 @@ function Cardetails() {
 
     const handleSubmit = async (e) => {
 
+        // console.log(allClientCars);
 
         if (carNumber.length < 10) {
             toast.error("car number should be of atleast 10 length");
@@ -99,11 +101,16 @@ function Cardetails() {
             assigned: false
         }
 
+        console.log(allClientCars);
+
         let arr = allClientCars;
         arr.push(newObj);
 
-        setallClientCars([...allClientCars, newObj]);
+
+        setallClientCars(arr);
         // console.log("Before going to next we checking if allClientCars are set or not", allClientCars, "arr->", arr);
+        console.log(allClientCars);
+
 
         let body;
         let flag;
@@ -124,7 +131,7 @@ function Cardetails() {
         let response;
 
         if (location.state.flag == "update") {
-            console.log("printing body in update", body);
+            // console.log("printing body in update", body);
             response = await fetch("http://localhost:8080/admin/client/update", {
                 method: "PUT",
                 headers: {
@@ -163,12 +170,15 @@ function Cardetails() {
 
 
 
+
+
     const handleAddCar = () => {
 
 
+        // console.log(allClientCars);
 
 
-        if (!(carModel === undefined || carNumber === undefined || description === undefined) && handleAddCarFlag === true) {
+        if (!(carModel === undefined || carNumber === undefined || description === undefined) && handleAddCarFlag === false) {
             const newObj = {
                 carModel: carModel,
                 carNumber: carNumber,
@@ -177,11 +187,17 @@ function Cardetails() {
                 planValidity: planValidity,
                 assigned: false
             }
+            // console.log
 
-            setallClientCars([...allClientCars, newObj]);
+
+            let arr = allClientCars;
+            arr.push(newObj);
+
+
+            setallClientCars(arr);
         }
-
-        console.log("handleaddcar");
+        // 
+        // console.log("handleaddcar");
         setCarModel("");
         setCarNumber("");
         setdescription("");
@@ -192,13 +208,14 @@ function Cardetails() {
     }
     // console.log(handleAddCarFlag, carNumber);
 
-    const handleChangePlanValidity =(e) => {
+    const handleChangePlanValidity = (e) => {
         // let currDate = new Date(e.target.value).toLocaleDateString("en-GB");
-        setplanValidity(e.target.value); 
+        setplanValidity(e.target.value);
         // console.log(planValidity); 
     }
-
-    console.log(planValidity)
+    // 
+    // console.log("printing all client cars", allClientCars);
+    console.log("printign plan validity -> ", planValidity);
 
     return (
         <div className="carDetails" >
@@ -252,7 +269,7 @@ function Cardetails() {
 
                             <div className="field">
                                 <div style={{ flex: 1 }} >
-                                    <FormControl variant="standard" sx={{ width:"95%", }}>
+                                    <FormControl variant="standard" sx={{ width: "95%", }}>
                                         <InputLabel id="plan">Plan</InputLabel>
                                         <Select
                                             labelId="plan"

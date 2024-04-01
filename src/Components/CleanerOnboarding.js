@@ -190,7 +190,7 @@ const CleanerOnboarding = () => {
                                         <div class="col-md-6 my-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
 
                                             <div class="form-outline">
-                                                <TextField type='password' id="standard-basic" label="Password" variant="standard" value={password} onChange={(e) => setpassword(e.target.value)} sx={{ width: '100%' }} required />
+                                                <TextField type='password' id="standard-basic" label="Password" variant="standard" value={password} disabled={location.state ? true : false} onChange={(e) => setpassword(e.target.value)} sx={{ width: '100%' }} required />
                                             </div>
 
 
