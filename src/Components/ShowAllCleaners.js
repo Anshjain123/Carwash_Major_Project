@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import { useNavigate } from 'react-router';
-
+import StarIcon from '@mui/icons-material/Star';
 
 const ShowAllCleaners = () => {
 
@@ -82,37 +82,44 @@ const ShowAllCleaners = () => {
                     </Fab>
                 </div>
                 <Toaster />
-                <TableContainer component={Paper}>
-                    <Table aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell align="right">PhoneNumber</TableCell>
-                                <TableCell align="right">DOB</TableCell>
-                                <TableCell align="right">CurrentAddress</TableCell>
-                                <TableCell align="right">PermanentAddress</TableCell>
-                                <TableCell align="right">Delete</TableCell>
-                                <TableCell align="right">Update</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {allCleaners && allCleaners.map((row, index) => (
-                                <TableRow
-                                    key={index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">{row.name}</TableCell>
-                                    <TableCell align="right">{row.phone}  </TableCell>
-                                    <TableCell align="right">{row.DOB} </TableCell>
-                                    <TableCell align="right">{row.currAdd} </TableCell>
-                                    <TableCell align="right">{row.permanentAdd} </TableCell>
-                                    <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.email)} /></TableCell>
-                                    <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
+                <div className='table_cleaner' >
+                    <TableContainer component={Paper}>
+                        <Table aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell align="right">PhoneNumber</TableCell>
+                                    <TableCell align="right">DOB</TableCell>
+                                    <TableCell align="right">CurrentAddress</TableCell>
+                                    <TableCell align="right">PermanentAddress</TableCell>
+                                    <TableCell align="right">Delete</TableCell>
+                                    <TableCell align="right">Update</TableCell>
+                                    <TableCell align="right">Ratings</TableCell>
+
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {allCleaners && allCleaners.map((row, index) => (
+                                    <TableRow
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">{row.name}</TableCell>
+                                        <TableCell align="right">{row.phone}  </TableCell>
+                                        <TableCell align="right">{row.DOB} </TableCell>
+                                        <TableCell align="right">{row.currAdd} </TableCell>
+                                        <TableCell align="right">{row.permanentAdd} </TableCell>
+                                        <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.email)} /></TableCell>
+                                        <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
+                                        <TableCell align="right">{row.totalRaters != 0 ? row.totalRatings/row.totalRaters : 0} <StarIcon id="icon" style = {{color:'yellow'}} /></TableCell>
+                                        
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+
             </div>
 
         </div>

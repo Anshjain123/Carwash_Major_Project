@@ -17,7 +17,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { Try } from '@mui/icons-material';
 import toast, { Toaster } from 'react-hot-toast';
 import "./AssignCleanersCars.css"
-
+import StarIcon from '@mui/icons-material/Star';
 
 const AssignCleanersCars = () => {
 
@@ -98,7 +98,7 @@ const AssignCleanersCars = () => {
                 try {
                     let response = await res.json();
                     console.log("printing assigned cleaners", response);
-                    setassignedCleaners(response); 
+                    setassignedCleaners(response);
                 } catch (error) {
                     console.log(error);
                 }
@@ -108,7 +108,7 @@ const AssignCleanersCars = () => {
 
         }
         getClientCars();
-        getClientCarsAssignedCleaners(); 
+        getClientCarsAssignedCleaners();
     }, [])
 
 
@@ -122,7 +122,7 @@ const AssignCleanersCars = () => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 400,
+        width: 'auto',
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
@@ -176,7 +176,7 @@ const AssignCleanersCars = () => {
 
 
         try {
-            
+
             let res = await fetch("http://localhost:8080/admin/assignCars/unassign", {
                 method: "POST",
                 headers: {
@@ -184,14 +184,14 @@ const AssignCleanersCars = () => {
                 },
                 body: JSON.stringify({ carNumber: carNumber })
             })
-    
-            if(res.ok) {
-                toast.success("Successfully unassigned"); 
+
+            if (res.ok) {
+                toast.success("Successfully unassigned");
             }
-            
-            console.log(res); 
+
+            console.log(res);
         } catch (error) {
-            console.log(error); 
+            console.log(error);
         }
     }
 
@@ -199,37 +199,40 @@ const AssignCleanersCars = () => {
     return (
         <div className='assignCleanerCars' >
             <Toaster />
-            <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>carNumber</TableCell>
-                            <TableCell align="right">carModel</TableCell>
-                            <TableCell align="right">description</TableCell>
-                            <TableCell align="right">Assigned</TableCell>
-                            <TableCell align="right">Assigned Cleaner</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {allClientCars.map((row, index) => (
-                            <TableRow
-                                key={index}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.carNumber}
-                                </TableCell>
-                                <TableCell align="right">{row.carModel}</TableCell>
-                                <TableCell align="right">{row.description}</TableCell>
-                                <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green', cursor:'pointer' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
-                                <TableCell align="right">{row.assigned ? assignedCleaners[row.carNumber] : "NA"}</TableCell>
-
-                                {/* <TableCell align="right">NO</TableCell> */}
+            <div className='table_assign_cleaners' >
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>carNumber</TableCell>
+                                <TableCell align="right">carModel</TableCell>
+                                <TableCell align="right">description</TableCell>
+                                <TableCell align="right">Assigned</TableCell>
+                                <TableCell align="right">Assigned Cleaner</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {allClientCars.map((row, index) => (
+                                <TableRow
+                                    key={index}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.carNumber}
+                                    </TableCell>
+                                    <TableCell align="right">{row.carModel}</TableCell>
+                                    <TableCell align="right">{row.description}</TableCell>
+                                    <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green', cursor: 'pointer' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
+                                    <TableCell align="right">{row.assigned ? assignedCleaners[row.carNumber] : "NA"}</TableCell>
+
+                                    {/* <TableCell align="right">NO</TableCell> */}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -245,6 +248,7 @@ const AssignCleanersCars = () => {
                                     <TableCell align="right">Phone</TableCell>
                                     <TableCell align="right">email</TableCell>
                                     <TableCell align="right">Assign</TableCell>
+                                    <TableCell align="right">Ratings</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -259,7 +263,7 @@ const AssignCleanersCars = () => {
                                         <TableCell align="right">{row.phone}</TableCell>
                                         <TableCell align="right">{row.email}</TableCell>
                                         <TableCell align="right"><Button sx={{ color: 'white' }} onClick={() => handleassign(row.email, row.name, row.phone)} >Assign</Button></TableCell>
-
+                                        <TableCell align="right">{row.totalRaters != 0 ? row.totalRatings / row.totalRaters : 0} <StarIcon id="icon" style={{ color: 'yellow' }} /></TableCell>
                                         {/* <TableCell align="right">NO</TableCell> */}
                                     </TableRow>
                                 ))}

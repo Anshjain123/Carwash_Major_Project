@@ -18,15 +18,34 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
 import { useNavigate } from 'react-router';
 import "./ShowAllClients.css"
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
 
 const ShowAllClients = () => {
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around'
+    };
 
     // const [allCleaners, setallCleaners] = useState(null);
     const [clients, setclients] = useState(null)
     const [Val, setVal] = useState(null);
     const navigate = useNavigate();
     const [count, setcount] = useState(0)
+    const [open, setopen] = useState(false);
 
 
     const retrieveAllClients = async () => {
@@ -83,7 +102,7 @@ const ShowAllClients = () => {
 
 
     const handleDelete = async (carNumber) => {
-
+        console.log(carNumber)
         let res = await fetch(`http://localhost:8080/admin/client/delete/${carNumber}`, {
             method: "DELETE",
             headers: {
@@ -92,6 +111,7 @@ const ShowAllClients = () => {
         })
         // console.log(res);
         setcount(count + 1);
+        // setopen(false);
     }
 
 
@@ -114,15 +134,17 @@ const ShowAllClients = () => {
                 description: row.description,
                 plan: row.plan,
                 planValidity: formattedDate,
-                assigned: row.assigned
+                assigned: row.assigned,
+                carLocation: row.carLocation
             }
         ]
+
 
         let body = {
             name: row.name,
             age: row.age,
             gender: row.gender,
-            address: row.address,
+            allClientAddresses: row.allClientAddresses,
             phone: row.phone,
             allClientCars: allClientCars,
             password: row.password,
@@ -155,68 +177,101 @@ const ShowAllClients = () => {
     useEffect(() => {
         retrieveAllClients();
     }, [count])
+
+
+    const handleToggle = (row) => {
+        setopen(!open);
+    }
+
     return (
 
         <div className='showAllClients'>
+
+
+
             <div className='client_add_icon' >
                 <Fab onClick={() => navigate("/registerClients")} color="dark" aria-label="add">
                     <AddIcon />
                 </Fab>
             </div>
             <Toaster />
-            <div className='table_clients'>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell align="right">PhoneNumber</TableCell>
-                                <TableCell align="right">Email</TableCell>
-                                <TableCell align="right">Gender</TableCell>
-                                <TableCell align="right">description</TableCell>
-                                <TableCell align="right">address</TableCell>
-                                <TableCell align="right">carModel</TableCell>
-                                <TableCell align="right">carNumber</TableCell>
-                                <TableCell align="right">age</TableCell>
-                                <TableCell align="right">Plan</TableCell>
-                                <TableCell align="right">Plan Validity</TableCell>
-                                <TableCell align="right">Delete</TableCell>
-                                <TableCell align="right">Update</TableCell>
-                                <TableCell align="right"></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {clients && clients.map((row, index) => (
-
-                                <TableRow
-                                    key={index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-
-
-
-                                    <TableCell component="th" scope="row">{row.name}</TableCell>
-                                    <TableCell align="right">{row.phone}  </TableCell>
-                                    <TableCell align="right">{row.email}  </TableCell>
-                                    <TableCell align="right">{row.gender} </TableCell>
-                                    <TableCell align="right">{row.description} </TableCell>
-                                    <TableCell align="right">{row.address} </TableCell>
-                                    <TableCell align="right">{row.carModel} </TableCell>
-                                    <TableCell align="right">{row.carNumber} </TableCell>
-                                    <TableCell align="right">{row.age} </TableCell>
-                                    <TableCell align="right">{row.plan} </TableCell>
-                                    <TableCell align="right">{row.planValidity} </TableCell>
-                                    <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
-                                    <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
-                                    <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
-                                    <TableCell align="right"><Button variant="contained" onClick={() => handleNotify(row.carNumber)} >Notify</Button></TableCell>
+            <div className='table' style={{ overflowY: 'scroll', height:"70vh" }}>
+                <div className='table_clients'  >
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell align="right">PhoneNumber</TableCell>
+                                    <TableCell align="right">Email</TableCell>
+                                    <TableCell align="right">Gender</TableCell>
+                                    <TableCell align="right">description</TableCell>
+                                    <TableCell align="right">addressLine</TableCell>
+                                    <TableCell align="right">pincode</TableCell>
+                                    <TableCell align="right">city</TableCell>
+                                    <TableCell align="right">state</TableCell>
+                                    <TableCell align="right">carModel</TableCell>
+                                    <TableCell align="right">carNumber</TableCell>
+                                    <TableCell align="right">age</TableCell>
+                                    <TableCell align="right">Plan</TableCell>
+                                    <TableCell align="right">Plan Validity</TableCell>
+                                    <TableCell align="right">Delete</TableCell>
+                                    <TableCell align="right">Update</TableCell>
+                                    <TableCell align="right"></TableCell>
                                 </TableRow>
-                            ))
-                            }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {clients && clients.map((row, index) => (
+
+                                    <TableRow
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+
+                                        <Modal
+                                            open={open}
+                                            // onClose={}
+                                            aria-labelledby="modal-modal-title"
+                                            aria-describedby="modal-modal-description"
+                                        >
+                                            <Box sx={style}>
+                                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                    Are you sure to delete this client
+                                                </Typography>
+                                                <button style={{ marginBottom: '10px', marginTop: '10px' }} className='btn btn-success' onClick={() => handleDelete(row.carNumber)} variant="contained" >Delete</button>
+                                                <button onClick={() => handleToggle()} className='btn btn-success' >Cancel</button>
+                                            </Box>
+                                        </Modal>
+
+
+
+                                        <TableCell component="th" scope="row">{row.name}</TableCell>
+                                        <TableCell align="right">{row.phone}  </TableCell>
+                                        <TableCell align="right">{row.email}  </TableCell>
+                                        <TableCell align="right">{row.gender} </TableCell>
+                                        <TableCell align="right">{row.description} </TableCell>
+                                        <TableCell align="right">{row.allClientAddresses[0].addressLine} </TableCell>
+                                        <TableCell align="right">{row.allClientAddresses[0].pincode} </TableCell>
+                                        <TableCell align="right">{row.allClientAddresses[0].city} </TableCell>
+                                        <TableCell align="right">{row.allClientAddresses[0].state} </TableCell>
+                                        <TableCell align="right">{row.carModel} </TableCell>
+                                        <TableCell align="right">{row.carNumber} </TableCell>
+                                        <TableCell align="right">{row.age} </TableCell>
+                                        <TableCell align="right">{row.plan} </TableCell>
+                                        <TableCell align="right">{row.planValidity} </TableCell>
+                                        <TableCell align="right"><DeleteIcon id="icon" onClick={() => handleDelete(row.carNumber)} /></TableCell>
+                                        <TableCell align="right"><EditIcon id="icon" onClick={() => handleUpdate(row)} /></TableCell>
+                                        <TableCell align="right"><Button onClick={() => navigate("/getImagesDayWise", { state: { carNumber: row.carNumber } })} variant="contained" >images</Button></TableCell>
+                                        <TableCell align="right"><Button variant="contained" onClick={() => handleNotify(row.carNumber)} >Notify</Button></TableCell>
+                                    </TableRow>
+                                ))
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
             </div>
+
 
         </div>
     )

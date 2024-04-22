@@ -27,7 +27,7 @@ function Cardetails() {
     const [progress, setprogress] = useState(0);
     const [allClientCars, setallClientCars] = useState(location.state.flag == "update" ? location.state.body.allClientCars : []);
     const [planValidity, setplanValidity] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].planValidity : undefined);
-
+    const [carLocation, setcarLocation] = useState(location.state.flag == "update" ? location.state.body.allClientCars[0].carLocation : undefined); 
     const navigate = useNavigate();
 
     let stateCodes = [
@@ -72,17 +72,17 @@ function Cardetails() {
 
         // console.log(allClientCars);
 
-        if (carNumber.length < 10) {
-            toast.error("car number should be of atleast 10 length");
-            return;
-        }
+        // if (carNumber.length < 10) {
+        //     toast.error("car number should be of atleast 10 length");
+        //     return;
+        // }
 
-        let state = carNumber.substring(0, 2)
+        // let state = carNumber.substring(0, 2)
 
-        if (stateCodes.indexOf(state) == -1) {
-            toast.error("please enter valid state car number");
-            return;
-        }
+        // if (stateCodes.indexOf(state) == -1) {
+        //     toast.error("please enter valid state car number");
+        //     return;
+        // }
         if (carModel === undefined || carNumber === undefined || description === undefined) {
             toast.error("required fields are empty!");
             return;
@@ -98,7 +98,8 @@ function Cardetails() {
             description: description,
             plan: plan,
             planValidity: planValidity,
-            assigned: false
+            assigned: false, 
+            carLocation:carLocation 
         }
 
         console.log(allClientCars);
@@ -204,6 +205,7 @@ function Cardetails() {
         setplan("");
         sethandleAddCarFlag(false);
         setplanValidity("");
+        setcarLocation("");
 
     }
     // console.log(handleAddCarFlag, carNumber);
@@ -218,7 +220,7 @@ function Cardetails() {
     console.log("printign plan validity -> ", planValidity);
 
     return (
-        <div className="carDetails" >
+        <div className="carDetails"  >
             <Toaster />
             <LoadingBar
                 color='#f11946'
@@ -286,6 +288,15 @@ function Cardetails() {
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <TextField value={planValidity} id="standard-basic" label="plan validity (dd-mm-yyyy)" variant="standard" type='date' onChange={(e) => handleChangePlanValidity(e)} sx={{ width: '100%' }} required />
+
+                                </div>
+
+                            </div>
+
+                            <div className="field">
+                                
+                                <div style={{ flex: 1 }}>
+                                    <TextField value={carLocation} id="standard-basic" label="Please specify the car location" variant="standard"  onChange={(e) => setcarLocation(e.target.value)} sx={{ width: '100%' }} required />
 
                                 </div>
 

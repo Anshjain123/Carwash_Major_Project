@@ -34,4 +34,8 @@
     padding-bottom: 20px;
   }
 }
-
+.table{
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  height: auto; 
+}

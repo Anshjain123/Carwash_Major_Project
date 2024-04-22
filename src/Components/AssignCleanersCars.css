@@ -29,3 +29,8 @@
     padding: 20px;
   }
 }
+.table_assign_cleaners {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  height: auto; 
+}

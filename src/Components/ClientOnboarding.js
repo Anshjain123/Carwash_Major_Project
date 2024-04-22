@@ -13,17 +13,20 @@ import { Toaster, toast } from "react-hot-toast";
 import LoadingBar from 'react-top-loading-bar'
 import ErrorIcon from '@mui/icons-material/Error';
 import Tooltip from '@mui/material/Tooltip';
-
 function ClientOnboarding() {
 
     // const [Data, setData] = useState({ fullName: "", age: "", address: "", gender: "male" });
-    console.log("printing location in client on boarding"); 
+    console.log("printing location in client on boarding");
     const navigate = useNavigate();
     const location = useLocation();
-    console.log(location.state); 
+    console.log(location.state);
     const [name, setname] = useState(location?.state?.name);
     const [age, setage] = useState(location?.state?.age);
     const [address, setaddress] = useState(location?.state?.address);
+    const [addressLine, setaddressLine] = useState(location?.state?.allClientAddresses[0].addressLine);
+    const [pincode, setpincode] = useState(location?.state?.allClientAddresses[0].pincode);
+    const [city, setcity] = useState(location?.state?.allClientAddresses[0].city);
+    const [state, setstate] = useState(location?.state?.allClientAddresses[0].state);
     const [gender, setgender] = useState(location?.state?.gender)
     const [phone, setphone] = useState(location?.state?.phone);
     const [email, setemail] = useState(location?.state?.email);
@@ -45,7 +48,7 @@ function ClientOnboarding() {
 
     const handleNext = () => {
 
-        if (name === undefined || age === undefined || address === undefined || gender === undefined || phone === undefined) {
+        if (name === undefined || age === undefined || gender === undefined || phone === undefined || addressLine === undefined || pincode === undefined || city == undefined || state === undefined) {
             toast.error("Required fields are empty or fields are wrong!");
             return;
         }
@@ -70,14 +73,22 @@ function ClientOnboarding() {
             flag = "update";
         } else {
             flag = "add"
+            let allClientAddresses = [
+                {
+                    addressLine: addressLine,
+                    pincode: pincode,
+                    city: city,
+                    state: state
+                }
+            ]
             body = {
                 name: name,
                 age: age,
                 gender: gender,
-                address: address,
                 phone: phone,
                 password: password,
                 email: email,
+                allClientAddresses:allClientAddresses
             }
         }
 
@@ -162,13 +173,53 @@ function ClientOnboarding() {
                             <div className="field">
                                 <TextField
                                     id="standard-textarea"
-                                    label="Address"
-                                    placeholder="Address"
+                                    label="AddressLine"
+                                    placeholder="AddressLine"
                                     multiline
                                     variant="standard"
-                                    name="address"
-                                    value={address}
-                                    onChange={(e) => setaddress(e.target.value)}
+                                    name="addressline"
+                                    value={addressLine}
+                                    onChange={(e) => setaddressLine(e.target.value)}
+                                    style={{ width: "100%", marginRight:'1ch' }}
+                                    required
+
+                                />
+                                <TextField
+                                    id="standard-textarea"
+                                    label="pincode"
+                                    placeholder="Pincode"
+                                    multiline
+                                    variant="standard"
+                                    name="pincode"
+                                    value={pincode}
+                                    onChange={(e) => setpincode(e.target.value)}
+                                    style={{ width: "100%" }}
+                                    required
+                                />
+                            </div>
+
+                            <div className="field">
+                                <TextField
+                                    id="standard-textarea"
+                                    label="city"
+                                    placeholder="City"
+                                    multiline
+                                    variant="standard"
+                                    name="city"
+                                    value={city}
+                                    onChange={(e) => setcity(e.target.value)}
+                                    style={{ width: "100%", marginRight:'1ch' }}
+                                    required
+                                />
+                                <TextField
+                                    id="standard-textarea"
+                                    label="state"
+                                    placeholder="State"
+                                    multiline
+                                    variant="standard"
+                                    name="state"
+                                    value={state}
+                                    onChange={(e) => setstate(e.target.value)}
                                     style={{ width: "100%" }}
                                     required
                                 />
