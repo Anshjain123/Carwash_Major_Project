@@ -43,9 +43,14 @@ const GetImagesDayWise = () => {
 
         try {
             let res = await response.json();
-            console.log(res);
-            setallUrls(res);
-            toast.success("fetched images succefully!");
+            if (res.length == 0) {
+                toast.error("no images found");
+            } else {
+
+                console.log(res);
+                setallUrls(res);
+                toast.success("fetched images succefully!");
+            }
         } catch (error) {
             console.log(error);
             toast.error("cannot fetched images! may be images are not uploaded for this day");
@@ -73,13 +78,13 @@ const GetImagesDayWise = () => {
                     </div>
                 </div>
                 <div className='images'>
-                    
+
                     {allUrls.length > 0 && allUrls.map((url, index) => {
                         return <ShowImage className="image" url={url} />
                     })}
 
                     {/* <img src='http://192.168.1.23:8080/getMedia/image9ML12345670' /> */}
-{/* 
+                    {/* 
                     
 
                     {/* 

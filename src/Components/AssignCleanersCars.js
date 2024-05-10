@@ -18,6 +18,8 @@ import { Try } from '@mui/icons-material';
 import toast, { Toaster } from 'react-hot-toast';
 import "./AssignCleanersCars.css"
 import StarIcon from '@mui/icons-material/Star';
+import Tooltip from '@mui/material/Tooltip';
+
 
 const AssignCleanersCars = () => {
 
@@ -222,7 +224,7 @@ const AssignCleanersCars = () => {
                                     </TableCell>
                                     <TableCell align="right">{row.carModel}</TableCell>
                                     <TableCell align="right">{row.description}</TableCell>
-                                    <TableCell align="right">{row.assigned ? <DoneIcon sx={{ color: 'green', cursor: 'pointer' }} onClick={() => handleUnAssign(row.carNumber)} /> : <AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} />}</TableCell>
+                                    <TableCell align="right">{row.assigned ? <Tooltip placement='top-end' title="Unassign cleaner"><DoneIcon sx={{ color: 'green', cursor: 'pointer' }} onClick={() => handleUnAssign(row.carNumber)} /> </Tooltip>: <Tooltip placement='top-end' title="Assign Cleaner"><AddIcon style={{ cursor: 'pointer' }} onClick={() => handleOpen(row)} /></Tooltip>}</TableCell>
                                     <TableCell align="right">{row.assigned ? assignedCleaners[row.carNumber] : "NA"}</TableCell>
 
                                     {/* <TableCell align="right">NO</TableCell> */}
@@ -262,7 +264,8 @@ const AssignCleanersCars = () => {
                                         </TableCell>
                                         <TableCell align="right">{row.phone}</TableCell>
                                         <TableCell align="right">{row.email}</TableCell>
-                                        <TableCell align="right"><Button sx={{ color: 'white' }} onClick={() => handleassign(row.email, row.name, row.phone)} >Assign</Button></TableCell>
+                                
+                                        <TableCell align="right"><Button className='assignButton' sx={{ color: 'white' }} onClick={() => handleassign(row.email, row.name, row.phone)} >Assign</Button></TableCell>
                                         <TableCell align="right">{row.totalRaters != 0 ? row.totalRatings / row.totalRaters : 0} <StarIcon id="icon" style={{ color: 'yellow' }} /></TableCell>
                                         {/* <TableCell align="right">NO</TableCell> */}
                                     </TableRow>

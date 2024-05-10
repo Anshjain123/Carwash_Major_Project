@@ -8,6 +8,7 @@ import { CardActionArea } from '@mui/material';
 import "./ShowImage.css"
 
 const ShowImage = ({ url }) => {
+    console.log(url);
     return (
         <div style={{ padding: "10px", flex: "1" }}>
 
